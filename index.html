@@ -306,7 +306,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>Number(n||0).toLocaleString("en-US");
 const num=(n,d=1)=>{n=Number(n);return Number.isInteger(n)?fmt(n):n.toFixed(d)};
-function dur(s){s=Math.round(s||0);const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?`${h} س`+(h<10&&m?` ${m} د`:""):m?`${m} د`:`${s} ث`}
+function dur(s){s=Math.round(s||0);if(s<60)return s?"أقل من دقيقة":"0 د";const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?`${h} س`+(h<10&&m?` ${m} د`:""):m?`${m} د`:`${s} ث`}
 function size(b){b=Number(b||0);const g=b/1073741824;return g>=1?g.toFixed(1)+" GB":(b/1048576).toFixed(0)+" MB"}
 function ago(d){if(!d)return "أبداً";const s=(Date.now()-new Date(d))/1000;if(s<90)return "الآن";if(s<3600)return `قبل ${Math.round(s/60)} د`;if(s<86400)return `قبل ${Math.round(s/3600)} س`;const n=Math.round(s/86400);return n==1?"أمس":`قبل ${n} يوماً`}
 const MONTHS=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
@@ -316,6 +316,7 @@ function stateOf(d){if(d.banned)return "s";return Date.now()-new Date(d.last_see
 const STATE_AR={a:"نشط",i:"غير نشط",s:"موقوف"};
 const dot=s=>`<i class="dot ${s}" aria-hidden="true"></i>`;
 const EVENT_AR={installed:"ثُبّت التطبيق",reinstalled:"أُعيد تثبيته",returned:"رجع بعد غياب"};
+const daysAr=n=>n==1?"يوم واحد":n==2?"يومان":n>=3&&n<=10?`${n} أيام`:`${n} يوماً`;
 const dayKey=t=>new Date(t).toISOString().slice(0,10);
 
 // ---------- data ----------
@@ -443,11 +444,11 @@ function viewApp(id){
   const days=dailyActive(list.map(d=>d.install_id)),todayN=days.at(-1).n;
   const top=Math.max(2,Math.ceil(Math.max(...days.map(x=>x.n))/2)*2);
   const chart=days.map(x=>`<div class="bar ${x.today?"today":""}" title="${x.d}: ${x.n} أجهزة"><b>${x.n}</b><i style="height:${Math.round(168*x.n/top)}px"></i><small><span>${x.wd}</span><span>${x.d}</span></small></div>`).join("");
-  const near=svcs.map(v=>v.big).filter(b=>/^\d+$/.test(b)).map(Number).sort((p,q)=>p-q)[0];
+  const near=svcs.filter(v=>v.s.auto!="keepalive").map(v=>v.big).filter(b=>/^\d+$/.test(b)).map(Number).sort((p,q)=>p-q)[0];
   const shown=list.filter(d=>filter=="all"||stateOf(d)==filter);
   const pill=(f,label,s)=>`<button class="flt ${filter==f?"on":""}" data-filter="${f}">${s?dot(s):""}${label}</button>`;
   return head+`
-  <p class="lead">اليوم فتح التطبيق <b>${fmt(todayN)} ${todayN==1?"جهاز":"أجهزة"}</b> من أصل <b>${fmt(list.length)}</b>${near!=null?`، وأقرب تجديد لخدمة يعتمد عليها بعد <b>${near} يوماً</b>`:""}.</p>
+  <p class="lead">اليوم فتح التطبيق <b>${fmt(todayN)} ${todayN==1?"جهاز":"أجهزة"}</b> من أصل <b>${fmt(list.length)}</b>${near!=null?`، وأقرب تجديد لخدمة يعتمد عليها بعد <b>${daysAr(near)}</b>`:""}.</p>
   <div class="two">
     <div class="panel"><h3>كم جهازاً فتح التطبيق كل يوم؟</h3>
       <p class="sub">كل عمود يمثّل يوماً، والرقم فوقه عدد الأجهزة المختلفة التي فتحت التطبيق في ذلك اليوم.</p>
