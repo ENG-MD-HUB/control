@@ -101,6 +101,13 @@ h3{font-size:17px;font-weight:600;margin:0}
 .svc .nm b{display:block;font-size:15px;font-weight:600}
 .svc .nm span{font-size:12.5px;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.cos{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.co{border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.co.off{opacity:.6}
+.co .r{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.code{display:inline-flex;align-items:center;gap:6px;padding:4px 6px 4px 10px;border-radius:9px;border:1px dashed var(--line);font-family:monospace;font-size:14px;letter-spacing:.14em;direction:ltr}
+.code.off{opacity:.55}.code.off b{text-decoration:line-through}.code b{font-weight:600}
+.code button{border:0;background:none;cursor:pointer;color:var(--muted);font-size:12px;padding:2px 4px;letter-spacing:0;font-family:inherit}
 .chip{height:22px;padding:0 8px;border-radius:7px;border:1px solid var(--line);background:var(--bg);font-size:11.5px;display:inline-flex;align-items:center}
 .mid{display:flex;flex-direction:column;gap:7px}
 .use{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);gap:8px}
@@ -251,6 +258,16 @@ dialog::backdrop{background:rgba(24,32,46,.38)}
   <div class="acts"><button class="btn primary" value="ok">حفظ</button><button class="btn" value="cancel" formnovalidate>إلغاء</button></div>
 </form></dialog>
 
+<dialog id="coDlg"><form method="dialog" class="dlg form">
+  <h3 id="coTitle">شركة جديدة في STORA</h3>
+  <label>اسم الشركة<input id="fCoName" required maxlength="80"></label>
+  <label id="fCoCodeL">رمز الانضمام (8 خانات)<span style="display:flex;gap:8px"><input id="fCoCode" maxlength="8" dir="ltr" style="flex:1;letter-spacing:.2em;font-family:monospace;text-transform:uppercase" autocomplete="off"><button class="btn" type="button" id="fCoGen">توليد</button></span></label>
+  <label class="check"><input type="checkbox" id="fCoActive" checked>نشطة (تقبل موظفين جدد ويعمل مستخدموها)</label>
+  <label>ملاحظة قصيرة<input id="fCoNote" maxlength="200"></label>
+  <div class="err" id="coErr"></div>
+  <div class="acts"><button class="btn primary" value="ok" id="coOk">حفظ</button><button class="btn" value="cancel" formnovalidate>إلغاء</button></div>
+</form></dialog>
+
 <dialog id="accDlg"><form method="dialog" class="dlg form">
   <h3 id="accTitle">حساب مرتبط</h3>
   <div class="row2">
@@ -332,11 +349,13 @@ async function load(){
     db.from("events").select("install_id,detail,created_at").eq("kind","error").order("created_at",{ascending:false}).limit(300),
     db.from("app_accounts").select("*").order("id"),
     db.from("services").select("*").order("id"),
-    db.rpc("owner_live_usage")
+    db.rpc("owner_live_usage"),
+    db.from("stora_companies").select("*").order("created_at"),
+    db.from("stora_join_codes").select("*").order("created_at")
   ]);
   if(r[0].error||r[1].error){$("view").innerHTML=`<div class="empty">تعذّر تحميل البيانات. سجّل الخروج ثم ادخل من جديد.</div>`;return}
   D={apps:r[0].data,devices:r[1].data,reasons:r[2].data||[],usage:r[3].data||[],events:r[4].data||[],errors:{},
-     accounts:r[6].data||[],services:r[7].data||[],live:(r[8].data||[])[0]||null};
+     accounts:r[6].data||[],services:r[7].data||[],live:(r[8].data||[])[0]||null,storaCos:r[9].data||[],storaCodes:r[10].data||[]};
   (r[5].data||[]).forEach(e=>{if(!D.errors[e.install_id])D.errors[e.install_id]=e});
   route();
 }
@@ -440,7 +459,8 @@ function viewApp(id){
   const accPanel=`<div class="panel sec"><div class="ph"><h3>الحسابات والبريد المرتبط</h3><button class="btn sm" id="addAcc">إضافة حساب</button></div>
     <p class="sub">أين سجّلت هذا البرنامج وبأي بريد. لا تُحفظ هنا كلمات مرور.</p>
     ${accs.length?`<div class="accs">${accs.map(x=>`<button class="acc" data-acc="${x.id}"><div class="r"><b>${esc(x.service)}</b><span class="muted" style="font-size:12px">${esc(x.role||"")}</span></div><span class="ltr" style="font-size:13.5px;text-align:start">${esc(x.email||"-")}</span><span class="faint" style="font-size:12px">${esc(x.note||"")}</span></button>`).join("")}</div>`:`<span class="muted">لا حسابات مسجّلة بعد.</span>`}</div>`;
-  if(!a.online)return head+accPanel;
+  const coPanel=id=="stora"?storaPanel():"";
+  if(!a.online)return head+coPanel+accPanel;
   const days=dailyActive(list.map(d=>d.install_id)),todayN=days.at(-1).n;
   const top=Math.max(2,Math.ceil(Math.max(...days.map(x=>x.n))/2)*2);
   const chart=days.map(x=>`<div class="bar ${x.today?"today":""}" title="${x.d}: ${x.n} أجهزة"><b>${x.n}</b><i style="height:${Math.round(168*x.n/top)}px"></i><small><span>${x.wd}</span><span>${x.d}</span></small></div>`).join("");
@@ -461,11 +481,56 @@ function viewApp(id){
       ${svcs.length?svcs.map(v=>svcRow(v,true)).join(""):`<span class="muted">لم تُربط خدمات بهذا البرنامج.</span>`}
     </div>
   </div>
+  ${coPanel}
   ${accPanel}
   <div class="sec"><div class="ph"><h3 style="font-size:20px">المستخدمون وأجهزتهم</h3><span class="muted" style="font-size:13px">اضغط أي بطاقة لترى كل التفاصيل.</span></div>
   <div class="filters">${pill("all",`الكل (${fmt(list.length)})`)}${pill("a",`نشط (${fmt(k.a)})`,"a")}${pill("i",`غير نشط (${fmt(k.i)})`,"i")}${pill("s",`موقوف (${fmt(k.s)})`,"s")}</div>
   <div class="cards">${shown.map(deviceCard).join("")||`<div class="empty">لا أجهزة في هذا التصنيف.</div>`}</div></div>`;
 }
+
+// ---------- STORA companies & join codes ----------
+function storaPanel(){
+  const cos=D.storaCos||[],codes=D.storaCodes||[];
+  return `<div class="panel sec"><div class="ph"><h3>شركات STORA ورموز الانضمام</h3><button class="btn sm" id="addCo">شركة جديدة</button></div>
+  <p class="sub">الموظف يسجّل في STORA برمز شركته. تعطيل الرمز يمنع التسجيلات الجديدة به، وتعطيل الشركة يوقف دخول مستخدميها.</p>
+  ${cos.length?`<div class="cos">${cos.map(c=>{const cc=codes.filter(x=>x.company_id==c.id);return `<div class="co ${c.active?"":"off"}">
+    <div class="r"><div><b>${esc(c.name)}</b><div class="faint ltr" style="font-size:11.5px;text-align:start">${esc(c.id)}</div></div><span class="chip">${c.active?`${dot("a")} نشطة`:`${dot("s")} معطّلة`}</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">${cc.map(x=>`<span class="code ${x.active?"":"off"}"><b>${esc(x.code)}</b><button data-code="${esc(x.code)}" data-co-act="${x.active?"codeoff":"codeon"}" title="${x.active?"تعطيل الرمز":"تفعيل الرمز"}">${x.active?"تعطيل":"تفعيل"}</button><button data-code="${esc(x.code)}" data-co-act="copy" title="نسخ">نسخ</button></span>`).join("")||`<span class="muted" style="font-size:13px">لا رموز</span>`}</div>
+    ${c.note?`<span class="faint" style="font-size:12.5px">${esc(c.note)}</span>`:""}
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-co="${esc(c.id)}" data-co-act="edit">تعديل</button><button class="btn sm" data-co="${esc(c.id)}" data-co-act="addcode">رمز جديد</button><button class="btn sm ${c.active?"danger":""}" data-co="${esc(c.id)}" data-co-act="toggle">${c.active?"تعطيل الشركة":"تفعيل الشركة"}</button></div>
+  </div>`}).join("")}</div>`:`<span class="muted">لا شركات بعد.</span>`}</div>`;
+}
+const genCode=()=>{const a="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let r="";const b=crypto.getRandomValues(new Uint8Array(8));for(const x of b)r+=a[x%a.length];return r};
+const CODE_RE=/^[A-Z0-9!@#$%&*\-_+=.?]{8}$/;
+function openCo(c){
+  $("coDlg").dataset.id=c?.id||"";$("coTitle").textContent=c?"تعديل الشركة":"شركة جديدة في STORA";
+  $("fCoName").value=c?.name||"";$("fCoActive").checked=c?c.active:true;$("fCoNote").value=c?.note||"";
+  $("fCoCodeL").hidden=!!c;$("fCoCode").value=c?"":genCode();$("coErr").textContent="";
+  $("coDlg").showModal();
+}
+$("fCoGen").addEventListener("click",()=>{$("fCoCode").value=genCode()});
+$("coOk").addEventListener("click",e=>{
+  const code=$("fCoCode").value.trim().toUpperCase();
+  if(!$("coDlg").dataset.id&&!CODE_RE.test(code)){e.preventDefault();$("coErr").textContent="الرمز 8 خانات: حروف إنجليزية أو أرقام أو رموز مثل - _ #"}
+  if((D.storaCodes||[]).some(x=>x.code==code)&&!$("coDlg").dataset.id){e.preventDefault();$("coErr").textContent="هذا الرمز مستخدم"}
+});
+$("coDlg").addEventListener("close",async()=>{
+  if($("coDlg").returnValue!="ok")return;
+  const id=$("coDlg").dataset.id||null,code=$("fCoCode").value.trim().toUpperCase();
+  const {data,error}=await db.rpc("owner_stora_save_company",{p_id:id,p_name:$("fCoName").value.trim(),p_active:$("fCoActive").checked,p_note:$("fCoNote").value.trim()||null});
+  if(error){alert("لم تتم العملية: "+error.message);return}
+  if(!id&&code)await rpc("owner_stora_set_code",{p_code:code,p_company:data,p_active:true});else await load();
+});
+$("view").addEventListener("click",async e=>{
+  if(e.target.closest("#addCo")){openCo(null);return}
+  const b=e.target.closest("[data-co-act]");if(!b)return;
+  const act=b.dataset.coAct,co=(D.storaCos||[]).find(x=>x.id==b.dataset.co),cd=(D.storaCodes||[]).find(x=>x.code==b.dataset.code);
+  if(act=="edit")openCo(co);
+  if(act=="toggle"){if(co.active&&!confirm(`تعطيل ${co.name}؟ لن يستطيع مستخدموها الدخول إلى STORA حتى تعيد تفعيلها.`))return;await rpc("owner_stora_save_company",{p_id:co.id,p_name:co.name,p_active:!co.active,p_note:co.note})}
+  if(act=="addcode"){const v=prompt("رمز الانضمام الجديد (8 خانات)",genCode());if(v===null)return;const code=v.trim().toUpperCase();if(!CODE_RE.test(code)){alert("الرمز 8 خانات: حروف إنجليزية أو أرقام أو رموز");return}await rpc("owner_stora_set_code",{p_code:code,p_company:co.id,p_active:true})}
+  if(act=="codeoff"||act=="codeon")await rpc("owner_stora_set_code",{p_code:cd.code,p_company:cd.company_id,p_active:act=="codeon"});
+  if(act=="copy"){try{await navigator.clipboard.writeText(cd.code);b.textContent="✓";setTimeout(()=>b.textContent="نسخ",1200)}catch{prompt("انسخ الرمز",cd.code)}}
+});
 
 function viewServices(){
   const items=D.services.map(svcView);
