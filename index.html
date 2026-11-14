@@ -308,7 +308,7 @@ const fmt=n=>Number(n||0).toLocaleString("en-US");
 const num=(n,d=1)=>{n=Number(n);return Number.isInteger(n)?fmt(n):n.toFixed(d)};
 function dur(s){s=Math.round(s||0);if(s<60)return s?"أقل من دقيقة":"0 د";const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?`${h} س`+(h<10&&m?` ${m} د`:""):m?`${m} د`:`${s} ث`}
 function size(b){b=Number(b||0);const g=b/1073741824;return g>=1?g.toFixed(1)+" GB":(b/1048576).toFixed(0)+" MB"}
-function ago(d){if(!d)return "أبداً";const s=(Date.now()-new Date(d))/1000;if(s<90)return "الآن";if(s<3600)return `قبل ${Math.round(s/60)} د`;if(s<86400)return `قبل ${Math.round(s/3600)} س`;const n=Math.round(s/86400);return n==1?"أمس":`قبل ${n} يوماً`}
+function ago(d){if(!d)return "أبداً";const s=(Date.now()-new Date(d))/1000;if(s<90)return "الآن";if(s<3600)return `قبل ${Math.round(s/60)} د`;if(s<86400)return `قبل ${Math.round(s/3600)} س`;const n=Math.round(s/86400);return n==1?"أمس":`قبل ${daysAr(n)}`}
 const MONTHS=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
 function date(d){if(!d)return "-";const x=new Date(d);return `${x.getDate()} ${MONTHS[x.getMonth()]}`}
 const WD=["أحد","اثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"];
