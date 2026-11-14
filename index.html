@@ -6,76 +6,180 @@
 <meta name="robots" content="noindex,nofollow">
 <title>مركز التحكم</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0F1115;--surface:#171A21;--line:#262B35;--text:#ECEEF2;--muted:#A3ACBA;--accent:#6EA8FE;--danger:#FF8A94}
+:root{--bg:#F3F5F8;--card:#fff;--line:#E1E5EC;--soft:#EDF0F4;--ink:#18202E;--muted:#5E6878;--faint:#8A93A3;--blue:#2563C9;--blue2:#A9C2EC;--amber:#B7791F;--red:#C8423B;--redbg:#FFF9F8;--redline:#E8B4B0}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 "IBM Plex Sans Arabic",system-ui,sans-serif}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Readex Pro",system-ui,sans-serif}
 [hidden]{display:none!important}
-a{color:inherit;text-decoration:none}
-button,input,select{font:inherit;color:inherit}
-.btn{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 14px;cursor:pointer}
+a{color:var(--blue);text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.btn{height:40px;padding:0 16px;border-radius:12px;border:1px solid #CBD2DC;background:#fff;font-size:14px;font-weight:500;white-space:nowrap}
 .btn:hover{border-color:var(--muted)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:#0F1115;font-weight:600}
-.btn.danger{border-color:var(--danger);color:var(--danger)}
-input,select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
-input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
-.muted{color:var(--muted)}
-.err{color:var(--danger);min-height:1.2em;font-size:13px}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.danger{border-color:var(--red);color:var(--red)}
+.btn.sm{height:34px;font-size:13px;padding:0 12px}
+.link{border:0;background:none;color:var(--blue);font-size:13px;padding:0}
+input,select,textarea{background:#fff;border:1px solid #CBD2DC;border-radius:10px;padding:9px 12px;width:100%}
+label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.muted{color:var(--muted)}.faint{color:var(--faint)}
+.err{color:var(--red);min-height:1.2em;font-size:13px}
+.ltr{direction:ltr;unicode-bidi:isolate}
 /* auth */
 .auth{max-width:360px;margin:14vh auto;padding:0 16px;display:grid;gap:12px}
-.auth h1{margin:0 0 4px;font-size:22px;text-align:center}
-.auth img{width:200px;height:200px;margin:0 auto;background:#fff;border-radius:12px;padding:8px}
+.auth h1{margin:0 0 4px;font-size:26px;font-weight:600;text-align:center}
+.auth img{width:200px;height:200px;margin:0 auto;background:#fff;border-radius:12px;padding:8px;border:1px solid var(--line)}
 .auth code{font-size:12px;text-align:center;word-break:break-all;color:var(--muted)}
 #mfaCode{text-align:center;letter-spacing:8px;font-size:20px}
 /* shell */
-.wrap{max-width:1120px;margin:0 auto;padding:20px 16px 48px}
-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-header h1{font-size:18px;margin:0;flex:1}
-.crumb{color:var(--muted);font-size:14px;margin-bottom:10px}
-.crumb a:hover{color:var(--text)}
-h2{font-size:20px;margin:0 0 4px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
-.totals{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
-.totals .card b{display:block;font-size:26px;font-weight:700}
-.totals .card span{color:var(--muted);font-size:13px}
-table{width:100%;border-collapse:collapse}
-th{color:var(--muted);font-weight:500;font-size:13px;text-align:start;padding:10px 12px;border-bottom:1px solid var(--line)}
-td{padding:12px;border-bottom:1px solid var(--line)}
-tr.link{cursor:pointer}tr.link:hover td{background:#1C2029}
-.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:24px 20px 64px}
+header.bar{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+header.bar h1{font-size:20px;font-weight:600;margin:0;flex:1}
+header.bar h1 a{color:inherit}
+.crumb{font-size:13px;color:var(--muted);margin-bottom:6px;display:inline-block}
+h2{font-size:28px;font-weight:600;margin:0}
+h3{font-size:17px;font-weight:600;margin:0}
+.lead{font-size:20px;font-weight:300;line-height:1.6;margin:8px 0 22px;max-width:900px}
+.lead b{font-weight:600}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+.panel .sub{margin:-6px 0 0;font-size:13px;color:var(--muted)}
+.ph{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.sec{margin-top:22px}
+/* totals */
+.totals{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 22px}
+.totals div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 18px}
+.totals b{display:block;font-size:28px;font-weight:600;line-height:1.2}
+.totals span{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
 /* status shapes: filled circle = active, hollow ring = inactive, square = stopped */
-.st{display:inline-block;width:10px;height:10px;margin-inline-end:6px;vertical-align:middle}
-.st.a{border-radius:50%;background:var(--text)}
-.st.i{border-radius:50%;border:2px solid var(--muted)}
-.st.s{border-radius:2px;background:var(--danger)}
-.pills{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
-.pill{border:1px solid var(--line);border-radius:999px;padding:5px 14px;cursor:pointer;background:none}
-.pill.on{border-color:var(--accent);color:var(--accent)}
-.chart{display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:8px}
-.chart div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
-.chart i{display:block;width:100%;max-width:28px;background:var(--accent);border-radius:4px 4px 0 0;min-height:2px}
-.chart small{color:var(--muted);font-size:11px}
-.chart em{font-style:normal;font-size:11px;color:var(--muted)}
-.grid2{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
-.grid2 .card b{display:block;font-size:20px}
-.kv{display:grid;grid-template-columns:140px 1fr;gap:6px 12px;font-size:14px}
-.kv span:nth-child(odd){color:var(--muted)}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.sec{margin-top:16px}
-.sec h3{font-size:15px;margin:0 0 10px}
-dialog{background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:20px;width:min(420px,92vw)}
-dialog::backdrop{background:#0008}
-dialog form{display:grid;gap:12px}
-.empty{padding:40px;text-align:center;color:var(--muted)}
-@media(max-width:720px){.totals,.grid2{grid-template-columns:repeat(2,1fr)}.hide-sm{display:none}.kv{grid-template-columns:110px 1fr}}
+.dot{display:inline-block;width:9px;height:9px;flex:none}
+.dot.a{border-radius:50%;background:var(--blue)}
+.dot.i{border-radius:50%;border:2px solid var(--faint)}
+.dot.s{background:var(--red)}
+/* app cards */
+.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:16px}
+.app{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;gap:16px;color:var(--ink);text-align:start;cursor:pointer}
+.app:hover{border-color:#9AA6B8}
+.logo{width:132px;flex:none;border-radius:14px;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:10px;min-height:76px}
+.logo img{max-width:100%;max-height:48px;object-fit:contain}
+.logo span{font-size:16px;font-weight:600;color:var(--blue);text-align:center;line-height:1.2}
+.app .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.app .hd{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.app .hd b{font-size:17px;font-weight:600;display:block}
+.app .hd small{font-size:12.5px;color:var(--muted)}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.trio div{background:var(--bg);border:1px solid var(--soft);border-radius:12px;padding:8px 10px}
+.trio b{display:block;font-size:20px;font-weight:600;line-height:1.2}
+.trio span{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.offline{border:1px dashed #CBD2DC;border-radius:12px;padding:10px 12px;font-size:13px;color:var(--muted)}
+/* app page */
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+.top .logo{width:150px;min-height:70px;position:relative}
+.top .ttl{flex:1;min-width:220px}
+.top .ttl small{font-size:14px;color:var(--muted)}
+.two{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start}
+.chart{display:flex;gap:8px}
+.yax{display:flex;flex-direction:column;justify-content:space-between;font-size:11px;color:var(--faint);padding-bottom:38px;min-width:16px;text-align:left}
+.plot{flex:1;position:relative;height:210px}
+.grid{position:absolute;inset:0 0 38px 0;display:flex;flex-direction:column;justify-content:space-between}
+.grid i{display:block;border-top:1px dashed var(--line)}
+.bars{position:absolute;inset:0;display:flex;gap:5px;align-items:flex-end}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.bar b{font-size:12px;font-weight:600;margin-bottom:3px}
+.bar i{display:block;width:100%;max-width:26px;border-radius:6px 6px 2px 2px;background:var(--blue2)}
+.bar.today i{background:var(--blue)}
+.bar small{height:38px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10.5px;color:var(--faint);line-height:1.3}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+/* service rows */
+.svc{border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:grid;grid-template-columns:210px 1fr 110px;gap:18px;align-items:center;background:#fff}
+.svc.danger{border-color:var(--redline);background:var(--redbg)}
+.svc.compact{grid-template-columns:1fr 90px;border:0;border-top:1px solid var(--soft);border-radius:0;padding:12px 0;background:none}
+.svc.compact .mid{grid-column:1/-1;order:3}
+.svc .nm b{display:block;font-size:15px;font-weight:600}
+.svc .nm span{font-size:12.5px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.chip{height:22px;padding:0 8px;border-radius:7px;border:1px solid var(--line);background:var(--bg);font-size:11.5px;display:inline-flex;align-items:center}
+.mid{display:flex;flex-direction:column;gap:7px}
+.use{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);gap:8px}
+.use b{color:var(--ink);font-weight:600}
+.track{position:relative;height:12px;background:var(--soft);border-radius:99px}
+.track i{position:absolute;top:0;bottom:0;right:0;border-radius:99px}
+.track .t{position:absolute;top:-5px;width:3px;height:22px;background:var(--ink);border-radius:2px}
+.ends{display:flex;justify-content:space-between;font-size:11.5px;color:var(--faint)}
+.left{text-align:center}
+.left b{display:block;font-size:26px;font-weight:600;line-height:1.1}
+.left span{font-size:12px;color:var(--muted)}
+.sum{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.sum div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:14px}
+.sum b{font-size:22px;font-weight:600}
+.key{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--muted);margin-bottom:18px}
+.key span{display:flex;align-items:center;gap:6px}
+.grp{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.grp h3 small{font-size:13px;font-weight:400;color:var(--muted);margin-inline-start:8px}
+/* accounts */
+.accs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.acc{border:1px solid var(--soft);border-radius:14px;padding:10px 14px;display:flex;flex-direction:column;gap:2px;text-align:start;background:#fff;cursor:pointer}
+.acc:hover{border-color:#9AA6B8}
+.acc .r{display:flex;justify-content:space-between;gap:8px}
+.acc b{font-size:14.5px;font-weight:600}
+/* devices */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 14px}
+.flt{height:36px;padding:0 14px;border-radius:99px;border:1px solid #CBD2DC;background:#fff;font-size:13.5px;display:flex;align-items:center;gap:7px}
+.flt.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;text-align:start;color:var(--ink);font-size:14px;cursor:pointer}
+.card:hover{border-color:#9AA6B8}
+.card.stopped{border-color:var(--redline)}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ch b{font-size:16.5px;font-weight:600;display:block}
+.ch small{font-size:12px;color:var(--muted)}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:99px;background:var(--bg);white-space:nowrap}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--soft);border-radius:14px}
+.nums div{padding:9px 4px;text-align:center}
+.nums div+div{border-inline-start:1px solid var(--soft)}
+.nums b{display:block;font-size:16px;font-weight:600}
+.nums span{font-size:11.5px;color:var(--muted)}
+.meta{display:flex;flex-direction:column;gap:4px;font-size:13px}
+.meta div{display:flex;justify-content:space-between;gap:10px}
+.meta span{color:var(--muted)}
+.more{font-size:12.5px;color:var(--blue);font-weight:500}
+/* dialogs */
+dialog{border:0;border-radius:22px;padding:0;width:min(560px,94vw);color:var(--ink);box-shadow:0 30px 80px rgba(24,32,46,.25)}
+dialog.wide{width:min(780px,94vw)}
+dialog::backdrop{background:rgba(24,32,46,.38)}
+.dlg{padding:24px 26px;display:flex;flex-direction:column;gap:14px}
+.dh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.dh h3{font-size:22px}
+.x{width:38px;height:38px;border-radius:12px;border:1px solid #CBD2DC;background:#fff;font-size:16px;flex:none}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.box{border:1px solid var(--soft);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.box h4{margin:0 0 2px;font-size:14px;font-weight:600}
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:13.5px}
+.kv span:first-child{color:var(--muted)}
+.ev{display:flex;gap:10px;font-size:13.5px}
+.ev i{width:10px;height:10px;border-radius:50%;border:2px solid var(--blue);margin-top:6px;flex:none}
+.wk{display:flex;align-items:flex-end;gap:6px;height:64px}
+.wk div{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;justify-content:flex-end;height:100%}
+.wk i{display:block;width:100%;max-width:22px;background:var(--blue);border-radius:4px 4px 1px 1px}
+.wk small{font-size:10px;color:var(--faint)}
+.acts{display:flex;flex-wrap:wrap;gap:10px;padding-top:10px;border-top:1px solid var(--soft)}
+.form{display:grid;gap:12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.check{flex-direction:row;align-items:center;gap:8px;color:var(--ink)}
+.check input{width:auto}
+.empty{padding:36px;text-align:center;color:var(--muted);background:#fff;border:1px dashed #CBD2DC;border-radius:18px}
+@media(max-width:860px){.two,.mg,.row2{grid-template-columns:1fr}.totals{grid-template-columns:repeat(2,1fr)}.apps{grid-template-columns:1fr}.svc{grid-template-columns:1fr}.svc .left{text-align:start}}
+@media(max-width:520px){.app{flex-direction:column}.logo{width:100%}}
 </style>
 </head>
 <body>
 
 <section class="auth" id="login" hidden>
   <h1>مركز التحكم</h1>
-  <p class="muted" style="margin:0;text-align:center">لوحة مراقبة وإدارة تطبيقات ENG-MD-HUB</p>
+  <p class="muted" style="margin:0;text-align:center">منصة برامج ENG-MD-HUB</p>
   <input id="email" type="email" autocomplete="username" placeholder="البريد" dir="ltr">
   <input id="password" type="password" autocomplete="current-password" placeholder="كلمة المرور" dir="ltr">
   <div class="err" id="loginErr"></div>
@@ -94,34 +198,99 @@ dialog form{display:grid;gap:12px}
 </section>
 
 <div class="wrap" id="app" hidden>
-  <header>
-    <h1>مركز التحكم</h1>
-    <button class="btn" id="refresh" title="تحديث">⟳</button>
-    <button class="btn" id="menuBtn">⋯</button>
+  <header class="bar">
+    <h1><a href="#/">مركز التحكم</a></h1>
+    <a class="btn" href="#/services" style="display:flex;align-items:center;color:var(--ink)">الخدمات والحدود</a>
+    <button class="btn" id="refresh" title="تحديث" aria-label="تحديث">⟳</button>
+    <button class="btn" id="menuBtn" aria-label="القائمة">⋯</button>
   </header>
   <main id="view"></main>
 </div>
 
-<dialog id="menuDlg"><form method="dialog">
+<dialog id="menuDlg"><form method="dialog" class="dlg">
   <button class="btn" type="button" id="addMfa">إضافة تطبيق مصادقة احتياطي</button>
   <button class="btn" type="button" id="chgPw">تغيير كلمة المرور</button>
   <button class="btn" type="button" id="signOut">تسجيل الخروج</button>
   <button class="btn" value="x">إغلاق</button>
 </form></dialog>
 
-<dialog id="stopDlg"><form method="dialog">
-  <h3 style="margin:0">إيقاف هذا الجهاز</h3>
-  <label class="muted" for="stopReason">السبب (يظهر للمستخدم)</label>
-  <select id="stopReason"></select>
-  <input id="stopNote" maxlength="200" placeholder="ملاحظة خاصة (اختياري)">
-  <div class="row"><button class="btn danger" value="ok">إيقاف</button><button class="btn" value="cancel">إلغاء</button></div>
+<dialog id="devDlg" class="wide"><div class="dlg" id="devBody"></div></dialog>
+
+<dialog id="stopDlg"><form method="dialog" class="dlg">
+  <h3>إيقاف هذا الجهاز</h3>
+  <label>السبب (يظهر للمستخدم)<select id="stopReason"></select></label>
+  <label>ملاحظة خاصة (اختياري)<input id="stopNote" maxlength="200"></label>
+  <div class="acts"><button class="btn danger" value="ok">إيقاف</button><button class="btn" value="cancel">إلغاء</button></div>
 </form></dialog>
 
-<dialog id="delDlg"><form method="dialog">
-  <h3 style="margin:0">حذف الجهاز</h3>
+<dialog id="delDlg"><form method="dialog" class="dlg">
+  <h3>حذف الجهاز</h3>
   <p class="muted" style="margin:0">سيُحذف الجهاز وكل سجلاته نهائياً. لا يمكن التراجع.</p>
-  <div class="row"><button class="btn danger" value="ok">حذف</button><button class="btn" value="cancel">إلغاء</button></div>
+  <div class="acts"><button class="btn danger" value="ok">حذف</button><button class="btn" value="cancel">إلغاء</button></div>
 </form></dialog>
+
+<dialog id="appStopDlg"><form method="dialog" class="dlg">
+  <h3 id="appStopTitle"></h3>
+  <p class="muted" style="margin:0" id="appStopHelp"></p>
+  <label>رسالة تظهر للمستخدمين<input id="appStopMsg" maxlength="200" value="التطبيق متوقف مؤقتاً للصيانة."></label>
+  <label id="appStopConfirmL">اكتب اسم التطبيق للتأكيد<input id="appStopConfirm" autocomplete="off"></label>
+  <div class="err" id="appStopErr"></div>
+  <div class="acts"><button class="btn danger" value="ok" id="appStopOk"></button><button class="btn" value="cancel">إلغاء</button></div>
+</form></dialog>
+
+<dialog id="appDlg"><form method="dialog" class="dlg form" id="appForm">
+  <h3 id="appDlgTitle">إضافة برنامج</h3>
+  <div class="row2">
+    <label>اسم البرنامج<input id="fAppName" required maxlength="60"></label>
+    <label>المعرّف (إنجليزي صغير)<input id="fAppId" required pattern="[a-z0-9-]{2,40}" dir="ltr" maxlength="40"></label>
+  </div>
+  <label>المنصات (افصل بفاصلة)<input id="fAppPlat" placeholder="android, web, windows, ios" dir="ltr"></label>
+  <label class="check"><input type="checkbox" id="fAppOnline" checked>يتصل بالإنترنت (له إحصاءات استخدام)</label>
+  <label>ملاحظة قصيرة<input id="fAppNote" maxlength="200"></label>
+  <div class="err" id="appErr"></div>
+  <div class="acts"><button class="btn primary" value="ok">حفظ</button><button class="btn" value="cancel" formnovalidate>إلغاء</button></div>
+</form></dialog>
+
+<dialog id="accDlg"><form method="dialog" class="dlg form">
+  <h3 id="accTitle">حساب مرتبط</h3>
+  <div class="row2">
+    <label>الخدمة<input id="fAccSvc" required maxlength="80" placeholder="Google Play Console"></label>
+    <label>الدور<input id="fAccRole" maxlength="80" placeholder="حساب المطوّر"></label>
+  </div>
+  <label>البريد أو اسم الحساب<input id="fAccEmail" maxlength="160" dir="ltr"></label>
+  <label>ملاحظة<input id="fAccNote" maxlength="200"></label>
+  <p class="faint" style="margin:0;font-size:12.5px">لا تكتب كلمات مرور هنا أبداً.</p>
+  <div class="acts"><button class="btn primary" value="ok">حفظ</button><button class="btn danger" type="button" id="accDel" hidden>حذف</button><button class="btn" value="cancel" formnovalidate>إلغاء</button></div>
+</form></dialog>
+
+<dialog id="svcDlg"><form method="dialog" class="dlg form">
+  <h3>خدمة أو حد مجاني</h3>
+  <div class="row2">
+    <label>المزوّد<input id="fSvcProv" required maxlength="60" placeholder="Firebase"></label>
+    <label>الميزة<input id="fSvcFeat" required maxlength="80" placeholder="قراءات Firestore"></label>
+  </div>
+  <label>النوع<select id="fSvcKind">
+    <option value="usage">استهلاك يتجدد (يومي، شهري…)</option>
+    <option value="storage">سعة تراكمية لا تتجدد</option>
+    <option value="expiry">تاريخ انتهاء (نطاق، شهادة، اشتراك)</option>
+  </select></label>
+  <div class="row2">
+    <label>المستهلك<input id="fSvcUsed" type="number" step="any" min="0" dir="ltr"></label>
+    <label>الحد<input id="fSvcMax" type="number" step="any" min="0" dir="ltr"></label>
+  </div>
+  <div class="row2">
+    <label>الوحدة<input id="fSvcUnit" maxlength="20" placeholder="GB"></label>
+    <label>التطبيقات (افصل بفاصلة)<input id="fSvcApps" dir="ltr" placeholder="readme, priora"></label>
+  </div>
+  <div class="row2">
+    <label>بداية الدورة<input id="fSvcStart" type="date"></label>
+    <label>التجديد أو الانتهاء<input id="fSvcEnd" type="date"></label>
+  </div>
+  <label>ملاحظة<input id="fSvcNote" maxlength="200"></label>
+  <div class="acts"><button class="btn primary" value="ok">حفظ</button><button class="btn danger" type="button" id="svcDel" hidden>حذف</button><button class="btn" value="cancel" formnovalidate>إلغاء</button></div>
+</form></dialog>
+
+<input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
 <script>
@@ -135,153 +304,320 @@ const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const DAY=864e5, IDLE_DAYS=14;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const fmt=n=>Number(n||0).toLocaleString("ar-SA-u-nu-latn");
-function dur(s){s=Math.round(s||0);const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?`${h} س ${m} د`:m?`${m} د`:`${s} ث`}
+const fmt=n=>Number(n||0).toLocaleString("en-US");
+const num=(n,d=1)=>{n=Number(n);return Number.isInteger(n)?fmt(n):n.toFixed(d)};
+function dur(s){s=Math.round(s||0);const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?`${h} س`+(h<10&&m?` ${m} د`:""):m?`${m} د`:`${s} ث`}
 function size(b){b=Number(b||0);const g=b/1073741824;return g>=1?g.toFixed(1)+" GB":(b/1048576).toFixed(0)+" MB"}
-function ago(d){if(!d)return "أبداً";const s=(Date.now()-new Date(d))/1000;if(s<90)return "الآن";if(s<3600)return `قبل ${Math.round(s/60)} د`;if(s<86400)return `قبل ${Math.round(s/3600)} س`;return `قبل ${Math.round(s/86400)} يوم`}
-function date(d){return d?new Date(d).toLocaleDateString("ar-SA-u-nu-latn-ca-gregory"):"-"}
+function ago(d){if(!d)return "أبداً";const s=(Date.now()-new Date(d))/1000;if(s<90)return "الآن";if(s<3600)return `قبل ${Math.round(s/60)} د`;if(s<86400)return `قبل ${Math.round(s/3600)} س`;const n=Math.round(s/86400);return n==1?"أمس":`قبل ${n} يوماً`}
+const MONTHS=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+function date(d){if(!d)return "-";const x=new Date(d);return `${x.getDate()} ${MONTHS[x.getMonth()]}`}
+const WD=["أحد","اثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"];
 function stateOf(d){if(d.banned)return "s";return Date.now()-new Date(d.last_seen)>IDLE_DAYS*DAY?"i":"a"}
 const STATE_AR={a:"نشط",i:"غير نشط",s:"موقوف"};
-const shape=s=>`<span class="st ${s}" aria-hidden="true"></span>`;
-const EVENT_AR={installed:"ثُبّت",reinstalled:"أُعيد تثبيته",returned:"رجع"};
+const dot=s=>`<i class="dot ${s}" aria-hidden="true"></i>`;
+const EVENT_AR={installed:"ثُبّت التطبيق",reinstalled:"أُعيد تثبيته",returned:"رجع بعد غياب"};
+const dayKey=t=>new Date(t).toISOString().slice(0,10);
 
 // ---------- data ----------
-let D={apps:[],devices:[],reasons:[],usage:[],events:[],errors:{}};
+let D={apps:[],devices:[],reasons:[],usage:[],events:[],errors:{},accounts:[],services:[],live:null};
 async function load(){
-  const since=new Date(Date.now()-14*DAY).toISOString().slice(0,10);
-  const [apps,dev,rs,us,ev,er]=await Promise.all([
+  const since=dayKey(Date.now()-14*DAY);
+  const r=await Promise.all([
     db.from("apps").select("*").order("created_at"),
     db.from("devices").select("*").order("last_seen",{ascending:false}),
     db.from("ban_reasons").select("*"),
     db.from("usage_daily").select("install_id,day,opens,app_seconds").gte("day",since),
     db.from("device_events").select("*").order("at",{ascending:false}).limit(500),
-    db.from("events").select("install_id,detail,created_at").eq("kind","error").order("created_at",{ascending:false}).limit(300)
+    db.from("events").select("install_id,detail,created_at").eq("kind","error").order("created_at",{ascending:false}).limit(300),
+    db.from("app_accounts").select("*").order("id"),
+    db.from("services").select("*").order("id"),
+    db.rpc("owner_live_usage")
   ]);
-  if(apps.error||dev.error){$("view").innerHTML=`<div class="empty">تعذّر تحميل البيانات. أعد تسجيل الدخول.</div>`;return}
-  D={apps:apps.data,devices:dev.data,reasons:rs.data||[],usage:us.data||[],events:ev.data||[],errors:{}};
-  (er.data||[]).forEach(e=>{if(!D.errors[e.install_id])D.errors[e.install_id]=e});
+  if(r[0].error||r[1].error){$("view").innerHTML=`<div class="empty">تعذّر تحميل البيانات. سجّل الخروج ثم ادخل من جديد.</div>`;return}
+  D={apps:r[0].data,devices:r[1].data,reasons:r[2].data||[],usage:r[3].data||[],events:r[4].data||[],errors:{},
+     accounts:r[6].data||[],services:r[7].data||[],live:(r[8].data||[])[0]||null};
+  (r[5].data||[]).forEach(e=>{if(!D.errors[e.install_id])D.errors[e.install_id]=e});
   route();
 }
+const appName=id=>D.apps.find(a=>a.id==id)?.name||id;
+function counts(list){const c={a:0,i:0,s:0};list.forEach(d=>c[stateOf(d)]++);return c}
+function logoBox(a,cls=""){return `<div class="logo ${cls}">${a.logo?`<img src="${esc(a.logo)}" alt="شعار ${esc(a.name)}">`:`<span>${esc(a.name)}</span>`}</div>`}
+
+// ---------- services: compute level, fill and time ----------
+function svcView(s){
+  const today=Date.now();
+  let used=s.used!=null?Number(s.used):null,max=s.max!=null?Number(s.max):null,unit=s.unit||"";
+  let start=s.period_start?new Date(s.period_start).getTime():null,end=s.period_end?new Date(s.period_end).getTime():null;
+  if(s.auto=="db_size"&&D.live)used=Math.round(D.live.db_bytes/1048576);
+  if(s.auto=="keepalive"&&D.live?.last_beat){start=new Date(D.live.last_beat).getTime();end=start+(max||7)*DAY;}
+  const pct=used!=null&&max?Math.min(100,Math.round(100*used/max)):null;
+  const timePct=start&&end?Math.max(0,Math.min(100,Math.round(100*(today-start)/(end-start)))):null;
+  const daysLeft=end?Math.ceil((end-today)/DAY):null;
+  const isTime=s.kind=="expiry";
+  // The keep-alive job runs every 5 days, so only warn when it is clearly late.
+  const soon=s.auto=="keepalive"?[1,2]:[4,14];
+  let lv="ok";
+  if((pct!=null&&pct>=90)||(isTime&&daysLeft!=null&&daysLeft<soon[0])||(daysLeft!=null&&daysLeft<0))lv="danger";
+  else if((pct!=null&&pct>=70)||(isTime&&daysLeft!=null&&daysLeft<soon[1]))lv="warn";
+  const color={danger:"var(--red)",warn:"var(--amber)",ok:"var(--blue)"}[lv];
+  const fill=isTime?(timePct??0):(pct??0);
+  const useTxt=isTime?(s.auto=="keepalive"?`آخر نشاط ${ago(start)}`:`${date(start)} ← ${date(end)}`):used!=null?`<b>${num(used)} ${esc(unit)}</b> من ${num(max)} ${esc(unit)}`:`<span class="faint">لم يُسجَّل الاستهلاك بعد</span>`;
+  const rightTxt=isTime?(timePct!=null?`مضى ${timePct}% من المدة`:""):(pct!=null?`استُهلك ${pct}%`:"");
+  let big="—",label=s.kind=="storage"?"لا يتجدد":"";
+  if(daysLeft!=null){big=daysLeft<0?"انتهى":String(daysLeft);label=daysLeft<0?"حدّث التاريخ":isTime?(s.auto=="keepalive"?"أيام قبل التوقف":"يوماً للانتهاء"):"يوماً للتجديد"}
+  const ends=s.kind=="storage"?["تراكمي",`${num(max)} ${esc(unit)}`]:[start?(s.auto=="keepalive"?"آخر نشاط":`بدأ ${date(start)}`):"",end?(isTime?`ينتهي ${date(end)}`:`يتجدد ${date(end)}`):""];
+  return {s,lv,color,fill,timePct,useTxt,rightTxt,big,label,ends};
+}
+function svcRow(v,compact){
+  const s=v.s;
+  return `<div class="svc ${v.lv=="danger"?"danger":""} ${compact?"compact":""}" ${compact?"":`data-svc="${s.id}" role="button" tabindex="0" style="cursor:pointer"`}>
+    <div class="nm"><b>${esc(compact?s.provider+" · "+s.feature:s.feature)}</b><span>${esc(s.note||"")}</span>
+      ${compact?"":`<div class="chips">${(s.apps||[]).map(a=>`<span class="chip">${esc(appName(a))}</span>`).join("")}</div>`}</div>
+    <div class="mid"><div class="use"><span>${v.useTxt}</span><span>${v.rightTxt}</span></div>
+      <div class="track"><i style="width:${v.fill}%;background:${v.color}"></i>${v.timePct!=null?`<span class="t" style="right:calc(${v.timePct}% - 1px)"></span>`:""}</div>
+      <div class="ends"><span>${v.ends[0]}</span><span>${v.ends[1]}</span></div></div>
+    <div class="left"><b style="color:${v.color}">${v.big}</b><span>${v.label}</span></div></div>`;
+}
+const LVO={danger:0,warn:1,ok:2};
 
 // ---------- views ----------
-function counts(list){const c={a:0,i:0,s:0};list.forEach(d=>c[stateOf(d)]++);return c}
-
 function viewHome(){
-  const c=counts(D.devices);
-  const rows=D.apps.map(a=>{
+  const online=D.devices,c=counts(online);
+  const svcs=D.services.map(svcView),bad=svcs.filter(v=>v.lv!="ok").sort((a,b)=>LVO[a.lv]-LVO[b.lv]);
+  const cards=D.apps.map(a=>{
     const list=D.devices.filter(d=>d.app_id==a.id),k=counts(list);
     const last=list.reduce((m,d)=>!m||d.last_seen>m?d.last_seen:m,null);
-    const ver=list.reduce((m,d)=>d.app_version&&d.app_version>m?d.app_version:m,"");
-    return `<tr class="link" data-go="#/app/${esc(a.id)}">
-      <td><b>${esc(a.name)}</b>${a.state=="stopped"?` <span class="muted">· ${shape("s")}موقوف</span>`:""}</td>
-      <td class="hide-sm muted">${esc((a.platforms||[]).join("، "))}</td>
-      <td class="hide-sm num">${esc(ver||"-")}</td>
-      <td class="num">${fmt(k.a)}</td><td class="num">${fmt(k.i)}</td><td class="num">${fmt(k.s)}</td>
-      <td class="muted">${ago(last)}</td></tr>`}).join("");
-  return `<h2>نظرة عامة</h2><p class="muted" style="margin:0">${fmt(D.apps.length)} تطبيق مسجّل</p>
+    const ver=list.map(d=>d.app_version).filter(Boolean).sort().pop();
+    const plat=(a.platforms||[]).join("، ")||"-";
+    return `<a class="app" href="#/app/${encodeURIComponent(a.id)}">${logoBox(a)}
+      <div class="body"><div class="hd"><div><b>${esc(a.name)}</b><small>${esc(plat)}${ver?` · <span class="ltr">v${esc(ver)}</span>`:""}${a.state=="stopped"?` · ${dot("s")} موقوف`:""}</small></div>
+      <small>${a.online?(list.length?ago(last):"لا أجهزة بعد"):"بدون إنترنت"}</small></div>
+      ${a.online?`<div class="trio"><div><b>${fmt(k.a)}</b><span>${dot("a")}نشط</span></div><div><b>${fmt(k.i)}</b><span>${dot("i")}غير نشط</span></div><div><b>${fmt(k.s)}</b><span>${dot("s")}موقوف</span></div></div>`
+        :`<div class="offline">برنامج لا يتصل بالإنترنت. تظهر هنا معلوماته وحساباته فقط.</div>`}
+      </div></a>`}).join("");
+  return `<div class="ph"><h2>كل البرامج</h2><button class="btn primary" id="addApp">إضافة برنامج</button></div>
   <div class="totals">
-    <div class="card"><b class="num">${fmt(D.devices.length)}</b><span>كل الأجهزة</span></div>
-    <div class="card"><b class="num">${fmt(c.a)}</b><span>${shape("a")}نشط</span></div>
-    <div class="card"><b class="num">${fmt(c.i)}</b><span>${shape("i")}غير نشط (+${IDLE_DAYS} يوماً)</span></div>
-    <div class="card"><b class="num">${fmt(c.s)}</b><span>${shape("s")}موقوف</span></div>
+    <div><b>${fmt(D.apps.length)}</b><span>برامج</span></div>
+    <div><b>${fmt(c.a)}</b><span>${dot("a")}أجهزة نشطة</span></div>
+    <div><b>${fmt(c.i)}</b><span>${dot("i")}غير نشطة (+${IDLE_DAYS} يوماً)</span></div>
+    <div><b>${fmt(c.s)}</b><span>${dot("s")}موقوفة</span></div>
   </div>
-  <div class="card" style="padding:0;overflow:auto"><table>
-    <thead><tr><th>التطبيق</th><th class="hide-sm">المنصات</th><th class="hide-sm">آخر إصدار</th><th>نشط</th><th>غير نشط</th><th>موقوف</th><th>آخر اتصال</th></tr></thead>
-    <tbody>${rows||`<tr><td colspan="7" class="empty">لا توجد تطبيقات بعد.</td></tr>`}</tbody></table></div>`;
+  ${bad.length?`<div class="panel" style="margin-bottom:18px"><div class="ph"><h3>يحتاج انتباهك</h3><a href="#/services">كل الخدمات</a></div>${bad.slice(0,3).map(v=>svcRow(v,true)).join("")}</div>`:""}
+  <div class="apps">${cards||`<div class="empty">لا توجد برامج بعد.</div>`}</div>`;
 }
 
 let filter="all";
 function dailyActive(ids){
   const set=new Set(ids),out=[];
   for(let i=13;i>=0;i--){
-    const day=new Date(Date.now()-i*DAY).toISOString().slice(0,10);
+    const t=Date.now()-i*DAY,day=dayKey(t),x=new Date(t);
     const n=new Set(D.usage.filter(u=>u.day==day&&set.has(u.install_id)&&(u.opens>0||u.app_seconds>0)).map(u=>u.install_id)).size;
-    out.push({day,n});
+    out.push({n,today:i==0,wd:i==0?"اليوم":WD[x.getDay()],d:`${x.getDate()}/${x.getMonth()+1}`});
   }
   return out;
 }
+function deviceCard(d){
+  const s=stateOf(d);
+  return `<button class="card ${s=="s"?"stopped":""}" data-dev="${esc(d.install_id)}">
+    <div class="ch"><div><b>${esc(d.label||d.device_model||"جهاز")}</b><small>${esc(d.device_model||"")}</small></div><span class="st">${dot(s)}${STATE_AR[s]}</span></div>
+    <span class="muted" style="font-size:13px;margin-top:-6px">آخر ظهور: ${ago(d.last_seen)}${d.ip_country||d.country?` · ${esc(d.ip_country||d.country)}`:""}</span>
+    <div class="nums"><div><b>${fmt(d.open_count)}</b><span>مرة فتح</span></div><div><b>${dur(d.read_seconds)}</b><span>قراءة</span></div><div><b>${fmt(d.library_books)}</b><span>كتاب</span></div></div>
+    <div class="meta"><div><span>النظام</span>Android ${esc(d.android_version||"-")}</div><div><span>الإصدار</span><span class="ltr" style="color:var(--ink)">${esc(d.app_version||"-")}</span></div><div><span>الأخطاء</span>${fmt(d.error_count)}</div></div>
+    <span class="more">عرض التفاصيل</span></button>`;
+}
 function viewApp(id){
-  const a=D.apps.find(x=>x.id==id);if(!a)return `<div class="empty">التطبيق غير موجود.</div>`;
+  const a=D.apps.find(x=>x.id==id);if(!a)return `<div class="empty">البرنامج غير موجود.</div>`;
   const list=D.devices.filter(d=>d.app_id==id),k=counts(list);
-  const days=dailyActive(list.map(d=>d.install_id)),mx=Math.max(1,...days.map(d=>d.n));
-  const chart=days.map(d=>`<div title="${d.day}: ${d.n}"><em class="num">${d.n||""}</em><i style="height:${Math.round(90*d.n/mx)}%"></i><small class="num">${d.day.slice(8)}</small></div>`).join("");
+  const svcs=D.services.filter(s=>(s.apps||[]).includes(id)).map(svcView).sort((x,y)=>LVO[x.lv]-LVO[y.lv]);
+  const accs=D.accounts.filter(x=>x.app_id==id);
+  const head=`<a class="crumb" href="#/">كل البرامج</a>
+  <div class="top"><div style="display:flex;flex-direction:column;align-items:center;gap:4px">${logoBox(a)}<button class="link" id="logoBtn">${a.logo?"تغيير الشعار":"رفع شعار"}</button></div>
+    <div class="ttl"><h2>${esc(a.name)}</h2><small>${esc((a.platforms||[]).join("، ")||"-")} · ${a.online?(a.state=="stopped"?`${dot("s")} موقوف للجميع`:"يعمل"):"بدون إنترنت"}${a.note?` · ${esc(a.note)}`:""}</small></div>
+    <button class="btn" id="editApp">تعديل</button>
+    ${a.online?(a.state=="stopped"?`<button class="btn primary" id="appStop" data-stop="0">استئناف التطبيق للجميع</button>`:`<button class="btn danger" id="appStop" data-stop="1">إيقاف التطبيق للجميع</button>`):""}
+  </div>`;
+  const accPanel=`<div class="panel sec"><div class="ph"><h3>الحسابات والبريد المرتبط</h3><button class="btn sm" id="addAcc">إضافة حساب</button></div>
+    <p class="sub">أين سجّلت هذا البرنامج وبأي بريد. لا تُحفظ هنا كلمات مرور.</p>
+    ${accs.length?`<div class="accs">${accs.map(x=>`<button class="acc" data-acc="${x.id}"><div class="r"><b>${esc(x.service)}</b><span class="muted" style="font-size:12px">${esc(x.role||"")}</span></div><span class="ltr" style="font-size:13.5px;text-align:start">${esc(x.email||"-")}</span><span class="faint" style="font-size:12px">${esc(x.note||"")}</span></button>`).join("")}</div>`:`<span class="muted">لا حسابات مسجّلة بعد.</span>`}</div>`;
+  if(!a.online)return head+accPanel;
+  const days=dailyActive(list.map(d=>d.install_id)),todayN=days.at(-1).n;
+  const top=Math.max(2,Math.ceil(Math.max(...days.map(x=>x.n))/2)*2);
+  const chart=days.map(x=>`<div class="bar ${x.today?"today":""}" title="${x.d}: ${x.n} أجهزة"><b>${x.n}</b><i style="height:${Math.round(168*x.n/top)}px"></i><small><span>${x.wd}</span><span>${x.d}</span></small></div>`).join("");
+  const near=svcs.map(v=>v.big).filter(b=>/^\d+$/.test(b)).map(Number).sort((p,q)=>p-q)[0];
   const shown=list.filter(d=>filter=="all"||stateOf(d)==filter);
-  const pill=(f,label)=>`<button class="pill ${filter==f?"on":""}" data-filter="${f}">${label}</button>`;
-  const rows=shown.map(d=>{const s=stateOf(d);return `<tr class="link" data-go="#/device/${esc(d.install_id)}">
-    <td>${shape(s)}<b>${esc(d.label||d.device_model||"جهاز")}</b></td>
-    <td class="hide-sm muted">${esc(d.device_model||"-")}</td>
-    <td class="hide-sm num">${esc(d.app_version||"-")}</td>
-    <td class="num">${fmt(d.open_count)}</td>
-    <td class="muted">${ago(d.last_seen)}</td></tr>`}).join("");
-  return `<div class="crumb"><a href="#/">نظرة عامة</a> ‹ ${esc(a.name)}</div>
-  <h2>${esc(a.name)}</h2><p class="muted" style="margin:0">${esc((a.platforms||[]).join("، "))} · ${a.state=="stopped"?"موقوف":"يعمل"}</p>
-  <div class="card sec"><h3>الأجهزة النشطة يومياً · آخر 14 يوماً</h3><div class="chart">${chart}</div></div>
-  <div class="pills">${pill("all",`الكل (${fmt(list.length)})`)}${pill("a",`${shape("a")}نشط (${fmt(k.a)})`)}${pill("i",`${shape("i")}غير نشط (${fmt(k.i)})`)}${pill("s",`${shape("s")}موقوف (${fmt(k.s)})`)}</div>
-  <div class="card" style="padding:0;overflow:auto"><table>
-    <thead><tr><th>المستخدم (الجهاز)</th><th class="hide-sm">الطراز</th><th class="hide-sm">الإصدار</th><th>مرات الفتح</th><th>آخر ظهور</th></tr></thead>
-    <tbody>${rows||`<tr><td colspan="5" class="empty">لا أجهزة في هذا التصنيف.</td></tr>`}</tbody></table></div>`;
-}
-
-function viewDevice(id){
-  const d=D.devices.find(x=>x.install_id==id);if(!d)return `<div class="empty">الجهاز غير موجود.</div>`;
-  const a=D.apps.find(x=>x.id==d.app_id)||{name:d.app_id},s=stateOf(d);
-  const sess=d.open_count?dur(Math.round(d.total_seconds/d.open_count)):"-";
-  const evs=D.events.filter(e=>e.install_id==id).slice(0,10);
-  const err=D.errors[id];
-  const reason=D.reasons.find(r=>r.code==d.ban_reason_code);
-  return `<div class="crumb"><a href="#/">نظرة عامة</a> ‹ <a href="#/app/${esc(d.app_id)}">${esc(a.name)}</a> ‹ ${esc(d.label||d.device_model||"جهاز")}</div>
-  <h2>${shape(s)}${esc(d.label||d.device_model||"جهاز")}</h2>
-  <p class="muted num" style="margin:0" dir="ltr">${esc(d.install_id)}</p>
-  <div class="grid2">
-    <div class="card"><b>${ago(d.last_seen)}</b><span class="muted">آخر ظهور</span></div>
-    <div class="card"><b class="num">${fmt(d.open_count)}</b><span class="muted">مرات الفتح</span></div>
-    <div class="card"><b>${dur(d.total_seconds)}</b><span class="muted">مدة الاستخدام</span></div>
+  const pill=(f,label,s)=>`<button class="flt ${filter==f?"on":""}" data-filter="${f}">${s?dot(s):""}${label}</button>`;
+  return head+`
+  <p class="lead">اليوم فتح التطبيق <b>${fmt(todayN)} ${todayN==1?"جهاز":"أجهزة"}</b> من أصل <b>${fmt(list.length)}</b>${near!=null?`، وأقرب تجديد لخدمة يعتمد عليها بعد <b>${near} يوماً</b>`:""}.</p>
+  <div class="two">
+    <div class="panel"><h3>كم جهازاً فتح التطبيق كل يوم؟</h3>
+      <p class="sub">كل عمود يمثّل يوماً، والرقم فوقه عدد الأجهزة المختلفة التي فتحت التطبيق في ذلك اليوم.</p>
+      <div class="chart"><div class="yax"><span>${top}</span><span>${top/2}</span><span>0</span></div>
+        <div class="plot"><div class="grid"><i></i><i></i><i></i></div><div class="bars">${chart}</div></div></div>
+      <div class="legend"><span><i class="sw" style="background:var(--blue)"></i>اليوم</span><span><i class="sw" style="background:var(--blue2)"></i>الأيام السابقة</span></div>
+    </div>
+    <div class="panel"><div class="ph"><h3>الخدمات التي يعتمد عليها</h3><a href="#/services">كل الخدمات</a></div>
+      <p class="sub">الحدود مشتركة بين كل البرامج التي تستخدم نفس الخدمة.</p>
+      ${svcs.length?svcs.map(v=>svcRow(v,true)).join(""):`<span class="muted">لم تُربط خدمات بهذا البرنامج.</span>`}
+    </div>
   </div>
-  <div class="card sec"><h3>النشاط</h3><div class="kv">
-    <span>متوسط الجلسة</span><span>${sess}</span>
-    <span>مدة القراءة</span><span>${dur(d.read_seconds)}</span>
-    <span>PDF خارجي</span><span>${dur(d.external_seconds)}</span>
-    <span>المكتبة</span><span class="num">${fmt(d.library_books)} كتاب · ${size(d.library_bytes)}</span>
-    <span>الأخطاء</span><span class="num">${fmt(d.error_count)}</span></div></div>
-  <div class="card sec"><h3>الجهاز</h3><div class="kv">
-    <span>الطراز</span><span>${esc(d.device_model||"-")}</span>
-    <span>النظام</span><span>Android ${esc(d.android_version||"-")}</span>
-    <span>الإصدار</span><span>${esc(d.app_version||"-")} (${esc(d.build_type||"-")})</span>
-    <span>الدولة</span><span>${esc(d.ip_country||d.country||"-")}</span>
-    <span>المنطقة الزمنية</span><span dir="ltr" style="text-align:end">${esc(d.timezone||"-")}</span>
-    <span>أول ظهور</span><span>${date(d.first_seen)}</span>
-    <span>إعادات التثبيت</span><span class="num">${fmt(d.reinstalls)}</span></div></div>
-  <div class="card sec"><h3>سجل الأحداث</h3>${evs.length?evs.map(e=>`<div>${esc(EVENT_AR[e.kind]||e.kind)} <span class="muted">· ${date(e.at)}</span></div>`).join(""):`<span class="muted">لا أحداث.</span>`}</div>
-  <div class="card sec"><h3>آخر خطأ</h3>${err?`<div>${esc(String(err.detail?.message||"").slice(0,300))}</div><span class="muted">${date(err.created_at)}</span>`:`<span class="muted">لا أخطاء.</span>`}</div>
-  <div class="card sec"><h3>التحكم</h3>
-    ${d.banned?`<p style="margin:0 0 10px">${shape("s")}موقوف منذ ${date(d.banned_at)} · ${esc(reason?reason.ar:d.ban_reason_code||"")}${d.ban_note?` · <span class="muted">${esc(d.ban_note)}</span>`:""}</p>`:""}
-    <div class="row">
-      ${d.banned?`<button class="btn primary" data-act="resume">استئناف</button>`:`<button class="btn danger" data-act="stop">إيقاف هذا الجهاز</button>`}
-      <button class="btn" data-act="name">تسمية</button>
-      <button class="btn" data-act="del">حذف الجهاز</button>
-    </div></div>`;
+  ${accPanel}
+  <div class="sec"><div class="ph"><h3 style="font-size:20px">المستخدمون وأجهزتهم</h3><span class="muted" style="font-size:13px">اضغط أي بطاقة لترى كل التفاصيل.</span></div>
+  <div class="filters">${pill("all",`الكل (${fmt(list.length)})`)}${pill("a",`نشط (${fmt(k.a)})`,"a")}${pill("i",`غير نشط (${fmt(k.i)})`,"i")}${pill("s",`موقوف (${fmt(k.s)})`,"s")}</div>
+  <div class="cards">${shown.map(deviceCard).join("")||`<div class="empty">لا أجهزة في هذا التصنيف.</div>`}</div></div>`;
 }
 
-// ---------- routing ----------
+function viewServices(){
+  const items=D.services.map(svcView);
+  const groups=[...new Set(D.services.map(s=>s.provider))].map(p=>{const its=items.filter(v=>v.s.provider==p).sort((a,b)=>LVO[a.lv]-LVO[b.lv]);return {p,its,worst:Math.min(...its.map(v=>LVO[v.lv]))}}).sort((a,b)=>a.worst-b.worst);
+  const n=l=>items.filter(v=>v.lv==l).length;
+  return `<a class="crumb" href="#/">كل البرامج</a>
+  <div class="ph"><h2>الخدمات والحدود المجانية</h2><button class="btn primary" id="addSvc">إضافة خدمة</button></div>
+  <p class="lead">الحدود تخص <b>الخدمة</b> لا البرنامج: كل البرامج التي تستخدم نفس الخدمة تستهلك من نفس الحد. يصير السطر <b style="color:var(--red)">أحمر</b> عند الخطر.</p>
+  <div class="sum"><div><b style="color:var(--red)">${n("danger")}</b>في خطر</div><div><b style="color:var(--amber)">${n("warn")}</b>تحتاج انتباه</div><div><b>${n("ok")}</b>بأمان</div></div>
+  <div class="key"><span><i class="sw" style="background:var(--blue)"></i>آمن</span><span><i class="sw" style="background:var(--amber)"></i>70% فأكثر، أو أقل من 14 يوماً على الانتهاء</span><span><i class="sw" style="background:var(--red)"></i>90% فأكثر، أو أقل من 4 أيام</span><span><i class="sw" style="background:var(--ink);width:3px"></i>اليوم</span></div>
+  ${groups.map(g=>`<div class="grp"><h3>${esc(g.p)}</h3>${g.its.map(v=>svcRow(v,false)).join("")}</div>`).join("")||`<div class="empty">لا خدمات بعد.</div>`}
+  <p class="faint" style="font-size:12.5px">حجم قاعدة البيانات وبقاء المشروع نشطاً يُحسبان تلقائياً. باقي الأرقام تُحدَّث يدوياً بالضغط على السطر.</p>`;
+}
+
+function deviceDetails(id){
+  const d=D.devices.find(x=>x.install_id==id);if(!d)return;
+  const s=stateOf(d),sess=d.open_count?dur(Math.round(d.total_seconds/d.open_count)):"-";
+  const wk=[];for(let i=6;i>=0;i--){const t=Date.now()-i*DAY,u=D.usage.find(x=>x.install_id==id&&x.day==dayKey(t));wk.push({v:Math.round((u?.app_seconds||0)/60),d:i==0?"اليوم":`${new Date(t).getDate()}/${new Date(t).getMonth()+1}`})}
+  const mx=Math.max(1,...wk.map(w=>w.v));
+  const evs=D.events.filter(e=>e.install_id==id).slice(0,6),err=D.errors[id],reason=D.reasons.find(r=>r.code==d.ban_reason_code);
+  $("devBody").innerHTML=`<div class="dh"><div><h3>${dot(s)} ${esc(d.label||d.device_model||"جهاز")}</h3><span class="muted" style="font-size:13px">${esc(d.device_model||"")} · Android ${esc(d.android_version||"-")} · <span class="ltr">${esc(d.install_id.slice(0,8))}</span></span></div><button class="x" data-close aria-label="إغلاق">✕</button></div>
+  <div class="nums" style="grid-template-columns:repeat(4,1fr)"><div><b>${ago(d.last_seen)}</b><span>آخر ظهور</span></div><div><b>${fmt(d.open_count)}</b><span>مرة فتح</span></div><div><b>${dur(d.read_seconds)}</b><span>مدة القراءة</span></div><div><b>${sess}</b><span>متوسط الجلسة</span></div></div>
+  <div class="box"><h4>استخدامه في آخر 7 أيام (بالدقائق)</h4><div class="wk">${wk.map(w=>`<div><small>${w.v||""}</small><i style="height:${Math.max(2,Math.round(42*w.v/mx))}px"></i><small>${w.d}</small></div>`).join("")}</div></div>
+  <div class="mg"><div class="box"><h4>النشاط</h4>
+    <div class="kv"><span>مدة الاستخدام الكلية</span><span>${dur(d.total_seconds)}</span></div>
+    <div class="kv"><span>قراءة داخل التطبيق</span><span>${dur(d.read_seconds)}</span></div>
+    <div class="kv"><span>PDF خارجي</span><span>${dur(d.external_seconds)}</span></div>
+    <div class="kv"><span>المكتبة</span><span>${fmt(d.library_books)} كتاب · ${size(d.library_bytes)}</span></div></div>
+  <div class="box"><h4>الجهاز</h4>
+    <div class="kv"><span>الدولة</span><span>${esc(d.ip_country||d.country||"-")}</span></div>
+    <div class="kv"><span>المنطقة الزمنية</span><span class="ltr">${esc(d.timezone||"-")}</span></div>
+    <div class="kv"><span>إصدار التطبيق</span><span class="ltr">${esc(d.app_version||"-")} (${esc(d.build_type||"-")})</span></div>
+    <div class="kv"><span>أول ظهور</span><span>${date(d.first_seen)}</span></div>
+    <div class="kv"><span>إعادات التثبيت</span><span>${fmt(d.reinstalls)}</span></div></div></div>
+  <div class="mg"><div class="box"><h4>سجل الأحداث</h4>${evs.length?evs.map(e=>`<div class="ev"><i></i><div>${esc(EVENT_AR[e.kind]||e.kind)}<br><span class="muted" style="font-size:12.5px">${date(e.at)}</span></div></div>`).join(""):`<span class="muted">لا أحداث.</span>`}</div>
+  <div class="box"><h4>آخر خطأ</h4>${err?`<span style="font-size:13.5px">${esc(String(err.detail?.message||"").slice(0,300))}</span><span class="muted" style="font-size:12.5px">${date(err.created_at)}</span>`:`<span class="muted">لا أخطاء.</span>`}</div></div>
+  ${d.banned?`<p style="margin:0">${dot("s")} موقوف منذ ${date(d.banned_at)} · ${esc(reason?reason.ar:d.ban_reason_code||"")}${d.ban_note?` · <span class="muted">${esc(d.ban_note)}</span>`:""}</p>`:""}
+  <div class="acts">${d.banned?`<button class="btn primary" data-act="resume">استئناف</button>`:`<button class="btn danger" data-act="stop">إيقاف هذا الجهاز</button>`}<button class="btn" data-act="name">تسمية الجهاز</button><button class="btn" data-act="del">حذف</button></div>`;
+  $("devDlg").dataset.id=id;
+  if(!$("devDlg").open)$("devDlg").showModal();
+}
+
+// ---------- routing and actions ----------
 function route(){
   if($("app").hidden)return;
   const h=location.hash.replace(/^#\/?/,"").split("/");
-  $("view").innerHTML=h[0]=="app"?viewApp(decodeURIComponent(h[1]||"")):h[0]=="device"?viewDevice(decodeURIComponent(h[1]||"")):viewHome();
+  const v=h[0]=="app"?viewApp(decodeURIComponent(h[1]||"")):h[0]=="services"?viewServices():viewHome();
+  $("view").innerHTML=v;
+  if($("devDlg").open&&$("devDlg").dataset.id)deviceDetails($("devDlg").dataset.id);
 }
+const curApp=()=>decodeURIComponent((location.hash.match(/^#\/app\/([^/]+)/)||[])[1]||"");
 addEventListener("hashchange",()=>{filter="all";route();scrollTo(0,0)});
-$("view").addEventListener("click",async e=>{
-  const go=e.target.closest("[data-go]");if(go){location.hash=go.dataset.go;return}
-  const f=e.target.closest("[data-filter]");if(f){filter=f.dataset.filter;route();return}
-  const b=e.target.closest("[data-act]");if(!b)return;
-  const id=decodeURIComponent(location.hash.split("/")[2]||"");
-  if(b.dataset.act=="resume"){await rpc("owner_set_ban",{p_install_id:id,p_banned:false,p_code:null,p_note:null})}
-  if(b.dataset.act=="name"){const cur=D.devices.find(x=>x.install_id==id)?.label||"";const v=prompt("اسم الجهاز",cur);if(v!==null)await rpc("owner_set_label",{p_install_id:id,p_label:v})}
-  if(b.dataset.act=="stop"){$("stopReason").innerHTML=D.reasons.map(r=>`<option value="${esc(r.code)}">${esc(r.ar)}</option>`).join("");$("stopNote").value="";$("stopDlg").dataset.id=id;$("stopDlg").showModal()}
-  if(b.dataset.act=="del"){$("delDlg").dataset.id=id;$("delDlg").showModal()}
+async function rpc(fn,args){const {error}=await db.rpc(fn,args);if(error){alert("لم تتم العملية: "+error.message);return false}await load();return true}
+
+$("view").addEventListener("click",e=>{
+  const t=e.target;
+  const f=t.closest("[data-filter]");if(f){filter=f.dataset.filter;route();return}
+  const dv=t.closest("[data-dev]");if(dv){deviceDetails(dv.dataset.dev);return}
+  const ac=t.closest("[data-acc]");if(ac){openAcc(D.accounts.find(x=>x.id==ac.dataset.acc));return}
+  const sv=t.closest("[data-svc]");if(sv){openSvc(D.services.find(x=>x.id==sv.dataset.svc));return}
+  if(t.closest("#addApp"))openApp(null);
+  if(t.closest("#editApp"))openApp(D.apps.find(a=>a.id==curApp()));
+  if(t.closest("#addAcc"))openAcc(null);
+  if(t.closest("#addSvc"))openSvc(null);
+  if(t.closest("#logoBtn"))$("logoFile").click();
+  if(t.closest("#appStop"))openAppStop(t.closest("#appStop").dataset.stop=="1");
 });
-async function rpc(fn,args){const {error}=await db.rpc(fn,args);if(error)alert("لم تتم العملية: "+error.message);await load()}
-$("stopDlg").addEventListener("close",()=>{if($("stopDlg").returnValue=="ok")rpc("owner_set_ban",{p_install_id:$("stopDlg").dataset.id,p_banned:true,p_code:$("stopReason").value,p_note:$("stopNote").value})});
-$("delDlg").addEventListener("close",async()=>{if($("delDlg").returnValue!="ok")return;const app=D.devices.find(x=>x.install_id==$("delDlg").dataset.id)?.app_id;await rpc("owner_delete_device",{p_install_id:$("delDlg").dataset.id});location.hash=app?"#/app/"+app:"#/"});
+$("view").addEventListener("keydown",e=>{if(e.key=="Enter"&&e.target.matches("[data-svc]"))e.target.click()});
+
+// device dialog
+$("devDlg").addEventListener("click",async e=>{
+  if(e.target==$("devDlg")||e.target.closest("[data-close]")){$("devDlg").close();return}
+  const b=e.target.closest("[data-act]");if(!b)return;const id=$("devDlg").dataset.id;
+  if(b.dataset.act=="resume")await rpc("owner_set_ban",{p_install_id:id,p_banned:false,p_code:null,p_note:null});
+  if(b.dataset.act=="name"){const v=prompt("اسم الجهاز",D.devices.find(x=>x.install_id==id)?.label||"");if(v!==null)await rpc("owner_set_label",{p_install_id:id,p_label:v})}
+  if(b.dataset.act=="stop"){$("stopReason").innerHTML=D.reasons.map(r=>`<option value="${esc(r.code)}">${esc(r.ar)}</option>`).join("");$("stopNote").value="";$("stopDlg").showModal()}
+  if(b.dataset.act=="del")$("delDlg").showModal();
+});
+$("devDlg").addEventListener("close",()=>{$("devDlg").dataset.id=""});
+$("stopDlg").addEventListener("close",()=>{if($("stopDlg").returnValue=="ok")rpc("owner_set_ban",{p_install_id:$("devDlg").dataset.id,p_banned:true,p_code:$("stopReason").value,p_note:$("stopNote").value})});
+$("delDlg").addEventListener("close",async()=>{if($("delDlg").returnValue!="ok")return;const id=$("devDlg").dataset.id;$("devDlg").close();await rpc("owner_delete_device",{p_install_id:id})});
+
+// whole-app stop (type the name to confirm)
+function openAppStop(stop){
+  const a=D.apps.find(x=>x.id==curApp());if(!a)return;
+  $("appStopDlg").dataset.stop=stop?"1":"0";
+  $("appStopTitle").textContent=stop?`إيقاف ${a.name} لكل المستخدمين`:`استئناف ${a.name} لكل المستخدمين`;
+  $("appStopHelp").textContent=stop?"كل جهاز يتصل بعد الآن سيتوقف ويرى الرسالة. الأجهزة غير المتصلة تتوقف عند أول اتصال.":"يعود التطبيق للعمل عند أول اتصال لكل جهاز.";
+  $("appStopMsg").parentElement.hidden=!stop;$("appStopConfirmL").hidden=!stop;$("appStopConfirm").value="";$("appStopErr").textContent="";
+  $("appStopOk").textContent=stop?"إيقاف للجميع":"استئناف";$("appStopOk").className=stop?"btn danger":"btn primary";
+  $("appStopDlg").showModal();
+}
+$("appStopOk").addEventListener("click",e=>{
+  const a=D.apps.find(x=>x.id==curApp());
+  if($("appStopDlg").dataset.stop=="1"&&$("appStopConfirm").value.trim()!=a.name){e.preventDefault();$("appStopErr").textContent=`اكتب "${a.name}" كما هو للتأكيد.`}
+});
+$("appStopDlg").addEventListener("close",()=>{if($("appStopDlg").returnValue!="ok")return;rpc("owner_set_app_state",{p_id:curApp(),p_stopped:$("appStopDlg").dataset.stop=="1",p_message:$("appStopMsg").value})});
+
+// add / edit app
+function openApp(a){
+  $("appDlgTitle").textContent=a?"تعديل البرنامج":"إضافة برنامج";
+  $("fAppName").value=a?.name||"";$("fAppId").value=a?.id||"";$("fAppId").disabled=!!a;
+  $("fAppPlat").value=(a?.platforms||[]).join(", ");$("fAppOnline").checked=a?a.online:true;$("fAppNote").value=a?.note||"";$("appErr").textContent="";
+  $("appDlg").showModal();
+}
+$("appDlg").addEventListener("close",async()=>{
+  if($("appDlg").returnValue!="ok")return;
+  const id=$("fAppId").value.trim().toLowerCase();
+  const ok=await rpc("owner_save_app",{p_id:id,p_name:$("fAppName").value.trim(),p_platforms:$("fAppPlat").value.split(",").map(s=>s.trim().toLowerCase()).filter(Boolean),p_online:$("fAppOnline").checked,p_note:$("fAppNote").value.trim()||null});
+  if(ok&&!location.hash.startsWith("#/app/"))location.hash="#/app/"+encodeURIComponent(id);
+});
+
+// logo upload: resized in the browser, stored as a small image (no extra service).
+$("logoFile").addEventListener("change",async()=>{
+  const file=$("logoFile").files[0];$("logoFile").value="";if(!file)return;
+  if(file.size>3*1048576){alert("الصورة كبيرة: الحد 3 MB.");return}
+  const url=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(file)});
+  let out=url;
+  if(file.type!="image/svg+xml"){
+    const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=url});
+    const scale=Math.min(1,480/img.width,160/img.height),c=document.createElement("canvas");
+    c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);out=c.toDataURL("image/webp",0.9);
+    if(!out.startsWith("data:image/webp"))out=c.toDataURL("image/png");
+  }
+  if(out.length>200000){alert("الشعار ما زال كبيراً بعد التصغير. جرّب صورة أبسط.");return}
+  await rpc("owner_set_app_logo",{p_id:curApp(),p_logo:out});
+});
+
+// accounts
+function openAcc(x){
+  $("accDlg").dataset.id=x?.id||"";$("accTitle").textContent=x?"تعديل الحساب":"إضافة حساب";
+  $("fAccSvc").value=x?.service||"";$("fAccRole").value=x?.role||"";$("fAccEmail").value=x?.email||"";$("fAccNote").value=x?.note||"";
+  $("accDel").hidden=!x;$("accDlg").showModal();
+}
+$("accDlg").addEventListener("close",()=>{if($("accDlg").returnValue!="ok")return;const id=$("accDlg").dataset.id;
+  rpc("owner_save_account",{p_id:id?Number(id):null,p_app:curApp(),p_service:$("fAccSvc").value.trim(),p_role:$("fAccRole").value.trim()||null,p_email:$("fAccEmail").value.trim()||null,p_note:$("fAccNote").value.trim()||null})});
+$("accDel").onclick=()=>{if(!confirm("حذف هذا الحساب من القائمة؟"))return;const id=Number($("accDlg").dataset.id);$("accDlg").close();rpc("owner_delete_account",{p_id:id})};
+
+// services
+function openSvc(s){
+  $("svcDlg").dataset.id=s?.id||"";
+  $("fSvcProv").value=s?.provider||"";$("fSvcFeat").value=s?.feature||"";$("fSvcKind").value=s?.kind||"usage";
+  $("fSvcUsed").value=s?.used??"";$("fSvcMax").value=s?.max??"";$("fSvcUnit").value=s?.unit||"";
+  $("fSvcApps").value=(s?.apps||[]).join(", ");$("fSvcStart").value=s?.period_start||"";$("fSvcEnd").value=s?.period_end||"";$("fSvcNote").value=s?.note||"";
+  $("fSvcUsed").disabled=s?.auto=="db_size";$("svcDel").hidden=!s;$("svcDlg").showModal();
+}
+$("svcDlg").addEventListener("close",()=>{if($("svcDlg").returnValue!="ok")return;const id=$("svcDlg").dataset.id,n=v=>v===""?null:Number(v);
+  rpc("owner_save_service",{p_id:id?Number(id):null,p_provider:$("fSvcProv").value.trim(),p_feature:$("fSvcFeat").value.trim(),p_kind:$("fSvcKind").value,
+    p_used:n($("fSvcUsed").value),p_max:n($("fSvcMax").value),p_unit:$("fSvcUnit").value.trim()||null,p_start:$("fSvcStart").value||null,p_end:$("fSvcEnd").value||null,
+    p_apps:$("fSvcApps").value.split(",").map(s=>s.trim().toLowerCase()).filter(Boolean),p_note:$("fSvcNote").value.trim()||null})});
+$("svcDel").onclick=()=>{if(!confirm("حذف هذه الخدمة من القائمة؟"))return;const id=Number($("svcDlg").dataset.id);$("svcDlg").close();rpc("owner_delete_service",{p_id:id})};
+
 $("refresh").onclick=load;
 
 // ---------- auth + two-step sign-in ----------
@@ -340,7 +676,7 @@ async function start(){
   screen("app");load();
 }
 start();
-setInterval(()=>{if(!$("app").hidden&&document.visibilityState=="visible")load()},60000);
+setInterval(()=>{if(!$("app").hidden&&document.visibilityState=="visible"&&!document.querySelector("dialog[open]"))load()},60000);
 </script>
 </body>
 </html>
