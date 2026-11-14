@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>مركز التحكم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0F1115;--surface:#171A21;--line:#262B35;--text:#ECEEF2;--muted:#A3ACBA;--accent:#6EA8FE;--danger:#FF8A94}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 "IBM Plex Sans Arabic",system-ui,sans-serif}
+[hidden]{display:none!important}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 14px;cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#0F1115;font-weight:600}
+.btn.danger{border-color:var(--danger);color:var(--danger)}
+input,select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.muted{color:var(--muted)}
+.err{color:var(--danger);min-height:1.2em;font-size:13px}
+/* auth */
+.auth{max-width:360px;margin:14vh auto;padding:0 16px;display:grid;gap:12px}
+.auth h1{margin:0 0 4px;font-size:22px;text-align:center}
+.auth img{width:200px;height:200px;margin:0 auto;background:#fff;border-radius:12px;padding:8px}
+.auth code{font-size:12px;text-align:center;word-break:break-all;color:var(--muted)}
+#mfaCode{text-align:center;letter-spacing:8px;font-size:20px}
+/* shell */
+.wrap{max-width:1120px;margin:0 auto;padding:20px 16px 48px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+header h1{font-size:18px;margin:0;flex:1}
+.crumb{color:var(--muted);font-size:14px;margin-bottom:10px}
+.crumb a:hover{color:var(--text)}
+h2{font-size:20px;margin:0 0 4px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.totals{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.totals .card b{display:block;font-size:26px;font-weight:700}
+.totals .card span{color:var(--muted);font-size:13px}
+table{width:100%;border-collapse:collapse}
+th{color:var(--muted);font-weight:500;font-size:13px;text-align:start;padding:10px 12px;border-bottom:1px solid var(--line)}
+td{padding:12px;border-bottom:1px solid var(--line)}
+tr.link{cursor:pointer}tr.link:hover td{background:#1C2029}
+.num{font-variant-numeric:tabular-nums}
+/* status shapes: filled circle = active, hollow ring = inactive, square = stopped */
+.st{display:inline-block;width:10px;height:10px;margin-inline-end:6px;vertical-align:middle}
+.st.a{border-radius:50%;background:var(--text)}
+.st.i{border-radius:50%;border:2px solid var(--muted)}
+.st.s{border-radius:2px;background:var(--danger)}
+.pills{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
+.pill{border:1px solid var(--line);border-radius:999px;padding:5px 14px;cursor:pointer;background:none}
+.pill.on{border-color:var(--accent);color:var(--accent)}
+.chart{display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:8px}
+.chart div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.chart i{display:block;width:100%;max-width:28px;background:var(--accent);border-radius:4px 4px 0 0;min-height:2px}
+.chart small{color:var(--muted);font-size:11px}
+.chart em{font-style:normal;font-size:11px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.grid2 .card b{display:block;font-size:20px}
+.kv{display:grid;grid-template-columns:140px 1fr;gap:6px 12px;font-size:14px}
+.kv span:nth-child(odd){color:var(--muted)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sec{margin-top:16px}
+.sec h3{font-size:15px;margin:0 0 10px}
+dialog{background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:20px;width:min(420px,92vw)}
+dialog::backdrop{background:#0008}
+dialog form{display:grid;gap:12px}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+@media(max-width:720px){.totals,.grid2{grid-template-columns:repeat(2,1fr)}.hide-sm{display:none}.kv{grid-template-columns:110px 1fr}}
+</style>
+</head>
+<body>
+
+<section class="auth" id="login" hidden>
+  <h1>مركز التحكم</h1>
+  <p class="muted" style="margin:0;text-align:center">لوحة مراقبة وإدارة تطبيقات ENG-MD-HUB</p>
+  <input id="email" type="email" autocomplete="username" placeholder="البريد" dir="ltr">
+  <input id="password" type="password" autocomplete="current-password" placeholder="كلمة المرور" dir="ltr">
+  <div class="err" id="loginErr"></div>
+  <button class="btn primary" id="loginBtn">دخول</button>
+</section>
+
+<section class="auth" id="mfa" hidden>
+  <h1 id="mfaTitle"></h1>
+  <p class="muted" id="mfaHelp" style="margin:0;text-align:center"></p>
+  <img id="mfaQr" alt="رمز QR" hidden>
+  <code id="mfaSecret" hidden dir="ltr"></code>
+  <input id="mfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" dir="ltr">
+  <div class="err" id="mfaErr"></div>
+  <button class="btn primary" id="mfaBtn">تأكيد</button>
+  <button class="btn" id="mfaOut">تسجيل الخروج</button>
+</section>
+
+<div class="wrap" id="app" hidden>
+  <header>
+    <h1>مركز التحكم</h1>
+    <button class="btn" id="refresh" title="تحديث">⟳</button>
+    <button class="btn" id="menuBtn">⋯</button>
+  </header>
+  <main id="view"></main>
+</div>
+
+<dialog id="menuDlg"><form method="dialog">
+  <button class="btn" type="button" id="addMfa">إضافة تطبيق مصادقة احتياطي</button>
+  <button class="btn" type="button" id="chgPw">تغيير كلمة المرور</button>
+  <button class="btn" type="button" id="signOut">تسجيل الخروج</button>
+  <button class="btn" value="x">إغلاق</button>
+</form></dialog>
+
+<dialog id="stopDlg"><form method="dialog">
+  <h3 style="margin:0">إيقاف هذا الجهاز</h3>
+  <label class="muted" for="stopReason">السبب (يظهر للمستخدم)</label>
+  <select id="stopReason"></select>
+  <input id="stopNote" maxlength="200" placeholder="ملاحظة خاصة (اختياري)">
+  <div class="row"><button class="btn danger" value="ok">إيقاف</button><button class="btn" value="cancel">إلغاء</button></div>
+</form></dialog>
+
+<dialog id="delDlg"><form method="dialog">
+  <h3 style="margin:0">حذف الجهاز</h3>
+  <p class="muted" style="margin:0">سيُحذف الجهاز وكل سجلاته نهائياً. لا يمكن التراجع.</p>
+  <div class="row"><button class="btn danger" value="ok">حذف</button><button class="btn" value="cancel">إلغاء</button></div>
+</form></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+"use strict";
+// Publishable key: public by design. Every table is locked by row-level security,
+// and owner access needs a two-step (aal2) session once an authenticator is enrolled.
+const SUPABASE_URL="https://lfdngkibdnkwhqeasmuw.supabase.co";
+const SUPABASE_KEY="sb_publishable_B738d43Eg2U1A9jkqymAwQ_QF11RD9s";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const DAY=864e5, IDLE_DAYS=14;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>Number(n||0).toLocaleString("ar-SA-u-nu-latn");
+function dur(s){s=Math.round(s||0);const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?`${h} س ${m} د`:m?`${m} د`:`${s} ث`}
+function size(b){b=Number(b||0);const g=b/1073741824;return g>=1?g.toFixed(1)+" GB":(b/1048576).toFixed(0)+" MB"}
+function ago(d){if(!d)return "أبداً";const s=(Date.now()-new Date(d))/1000;if(s<90)return "الآن";if(s<3600)return `قبل ${Math.round(s/60)} د`;if(s<86400)return `قبل ${Math.round(s/3600)} س`;return `قبل ${Math.round(s/86400)} يوم`}
+function date(d){return d?new Date(d).toLocaleDateString("ar-SA-u-nu-latn-ca-gregory"):"-"}
+function stateOf(d){if(d.banned)return "s";return Date.now()-new Date(d.last_seen)>IDLE_DAYS*DAY?"i":"a"}
+const STATE_AR={a:"نشط",i:"غير نشط",s:"موقوف"};
+const shape=s=>`<span class="st ${s}" aria-hidden="true"></span>`;
+const EVENT_AR={installed:"ثُبّت",reinstalled:"أُعيد تثبيته",returned:"رجع"};
+
+// ---------- data ----------
+let D={apps:[],devices:[],reasons:[],usage:[],events:[],errors:{}};
+async function load(){
+  const since=new Date(Date.now()-14*DAY).toISOString().slice(0,10);
+  const [apps,dev,rs,us,ev,er]=await Promise.all([
+    db.from("apps").select("*").order("created_at"),
+    db.from("devices").select("*").order("last_seen",{ascending:false}),
+    db.from("ban_reasons").select("*"),
+    db.from("usage_daily").select("install_id,day,opens,app_seconds").gte("day",since),
+    db.from("device_events").select("*").order("at",{ascending:false}).limit(500),
+    db.from("events").select("install_id,detail,created_at").eq("kind","error").order("created_at",{ascending:false}).limit(300)
+  ]);
+  if(apps.error||dev.error){$("view").innerHTML=`<div class="empty">تعذّر تحميل البيانات. أعد تسجيل الدخول.</div>`;return}
+  D={apps:apps.data,devices:dev.data,reasons:rs.data||[],usage:us.data||[],events:ev.data||[],errors:{}};
+  (er.data||[]).forEach(e=>{if(!D.errors[e.install_id])D.errors[e.install_id]=e});
+  route();
+}
+
+// ---------- views ----------
+function counts(list){const c={a:0,i:0,s:0};list.forEach(d=>c[stateOf(d)]++);return c}
+
+function viewHome(){
+  const c=counts(D.devices);
+  const rows=D.apps.map(a=>{
+    const list=D.devices.filter(d=>d.app_id==a.id),k=counts(list);
+    const last=list.reduce((m,d)=>!m||d.last_seen>m?d.last_seen:m,null);
+    const ver=list.reduce((m,d)=>d.app_version&&d.app_version>m?d.app_version:m,"");
+    return `<tr class="link" data-go="#/app/${esc(a.id)}">
+      <td><b>${esc(a.name)}</b>${a.state=="stopped"?` <span class="muted">· ${shape("s")}موقوف</span>`:""}</td>
+      <td class="hide-sm muted">${esc((a.platforms||[]).join("، "))}</td>
+      <td class="hide-sm num">${esc(ver||"-")}</td>
+      <td class="num">${fmt(k.a)}</td><td class="num">${fmt(k.i)}</td><td class="num">${fmt(k.s)}</td>
+      <td class="muted">${ago(last)}</td></tr>`}).join("");
+  return `<h2>نظرة عامة</h2><p class="muted" style="margin:0">${fmt(D.apps.length)} تطبيق مسجّل</p>
+  <div class="totals">
+    <div class="card"><b class="num">${fmt(D.devices.length)}</b><span>كل الأجهزة</span></div>
+    <div class="card"><b class="num">${fmt(c.a)}</b><span>${shape("a")}نشط</span></div>
+    <div class="card"><b class="num">${fmt(c.i)}</b><span>${shape("i")}غير نشط (+${IDLE_DAYS} يوماً)</span></div>
+    <div class="card"><b class="num">${fmt(c.s)}</b><span>${shape("s")}موقوف</span></div>
+  </div>
+  <div class="card" style="padding:0;overflow:auto"><table>
+    <thead><tr><th>التطبيق</th><th class="hide-sm">المنصات</th><th class="hide-sm">آخر إصدار</th><th>نشط</th><th>غير نشط</th><th>موقوف</th><th>آخر اتصال</th></tr></thead>
+    <tbody>${rows||`<tr><td colspan="7" class="empty">لا توجد تطبيقات بعد.</td></tr>`}</tbody></table></div>`;
+}
+
+let filter="all";
+function dailyActive(ids){
+  const set=new Set(ids),out=[];
+  for(let i=13;i>=0;i--){
+    const day=new Date(Date.now()-i*DAY).toISOString().slice(0,10);
+    const n=new Set(D.usage.filter(u=>u.day==day&&set.has(u.install_id)&&(u.opens>0||u.app_seconds>0)).map(u=>u.install_id)).size;
+    out.push({day,n});
+  }
+  return out;
+}
+function viewApp(id){
+  const a=D.apps.find(x=>x.id==id);if(!a)return `<div class="empty">التطبيق غير موجود.</div>`;
+  const list=D.devices.filter(d=>d.app_id==id),k=counts(list);
+  const days=dailyActive(list.map(d=>d.install_id)),mx=Math.max(1,...days.map(d=>d.n));
+  const chart=days.map(d=>`<div title="${d.day}: ${d.n}"><em class="num">${d.n||""}</em><i style="height:${Math.round(90*d.n/mx)}%"></i><small class="num">${d.day.slice(8)}</small></div>`).join("");
+  const shown=list.filter(d=>filter=="all"||stateOf(d)==filter);
+  const pill=(f,label)=>`<button class="pill ${filter==f?"on":""}" data-filter="${f}">${label}</button>`;
+  const rows=shown.map(d=>{const s=stateOf(d);return `<tr class="link" data-go="#/device/${esc(d.install_id)}">
+    <td>${shape(s)}<b>${esc(d.label||d.device_model||"جهاز")}</b></td>
+    <td class="hide-sm muted">${esc(d.device_model||"-")}</td>
+    <td class="hide-sm num">${esc(d.app_version||"-")}</td>
+    <td class="num">${fmt(d.open_count)}</td>
+    <td class="muted">${ago(d.last_seen)}</td></tr>`}).join("");
+  return `<div class="crumb"><a href="#/">نظرة عامة</a> ‹ ${esc(a.name)}</div>
+  <h2>${esc(a.name)}</h2><p class="muted" style="margin:0">${esc((a.platforms||[]).join("، "))} · ${a.state=="stopped"?"موقوف":"يعمل"}</p>
+  <div class="card sec"><h3>الأجهزة النشطة يومياً · آخر 14 يوماً</h3><div class="chart">${chart}</div></div>
+  <div class="pills">${pill("all",`الكل (${fmt(list.length)})`)}${pill("a",`${shape("a")}نشط (${fmt(k.a)})`)}${pill("i",`${shape("i")}غير نشط (${fmt(k.i)})`)}${pill("s",`${shape("s")}موقوف (${fmt(k.s)})`)}</div>
+  <div class="card" style="padding:0;overflow:auto"><table>
+    <thead><tr><th>المستخدم (الجهاز)</th><th class="hide-sm">الطراز</th><th class="hide-sm">الإصدار</th><th>مرات الفتح</th><th>آخر ظهور</th></tr></thead>
+    <tbody>${rows||`<tr><td colspan="5" class="empty">لا أجهزة في هذا التصنيف.</td></tr>`}</tbody></table></div>`;
+}
+
+function viewDevice(id){
+  const d=D.devices.find(x=>x.install_id==id);if(!d)return `<div class="empty">الجهاز غير موجود.</div>`;
+  const a=D.apps.find(x=>x.id==d.app_id)||{name:d.app_id},s=stateOf(d);
+  const sess=d.open_count?dur(Math.round(d.total_seconds/d.open_count)):"-";
+  const evs=D.events.filter(e=>e.install_id==id).slice(0,10);
+  const err=D.errors[id];
+  const reason=D.reasons.find(r=>r.code==d.ban_reason_code);
+  return `<div class="crumb"><a href="#/">نظرة عامة</a> ‹ <a href="#/app/${esc(d.app_id)}">${esc(a.name)}</a> ‹ ${esc(d.label||d.device_model||"جهاز")}</div>
+  <h2>${shape(s)}${esc(d.label||d.device_model||"جهاز")}</h2>
+  <p class="muted num" style="margin:0" dir="ltr">${esc(d.install_id)}</p>
+  <div class="grid2">
+    <div class="card"><b>${ago(d.last_seen)}</b><span class="muted">آخر ظهور</span></div>
+    <div class="card"><b class="num">${fmt(d.open_count)}</b><span class="muted">مرات الفتح</span></div>
+    <div class="card"><b>${dur(d.total_seconds)}</b><span class="muted">مدة الاستخدام</span></div>
+  </div>
+  <div class="card sec"><h3>النشاط</h3><div class="kv">
+    <span>متوسط الجلسة</span><span>${sess}</span>
+    <span>مدة القراءة</span><span>${dur(d.read_seconds)}</span>
+    <span>PDF خارجي</span><span>${dur(d.external_seconds)}</span>
+    <span>المكتبة</span><span class="num">${fmt(d.library_books)} كتاب · ${size(d.library_bytes)}</span>
+    <span>الأخطاء</span><span class="num">${fmt(d.error_count)}</span></div></div>
+  <div class="card sec"><h3>الجهاز</h3><div class="kv">
+    <span>الطراز</span><span>${esc(d.device_model||"-")}</span>
+    <span>النظام</span><span>Android ${esc(d.android_version||"-")}</span>
+    <span>الإصدار</span><span>${esc(d.app_version||"-")} (${esc(d.build_type||"-")})</span>
+    <span>الدولة</span><span>${esc(d.ip_country||d.country||"-")}</span>
+    <span>المنطقة الزمنية</span><span dir="ltr" style="text-align:end">${esc(d.timezone||"-")}</span>
+    <span>أول ظهور</span><span>${date(d.first_seen)}</span>
+    <span>إعادات التثبيت</span><span class="num">${fmt(d.reinstalls)}</span></div></div>
+  <div class="card sec"><h3>سجل الأحداث</h3>${evs.length?evs.map(e=>`<div>${esc(EVENT_AR[e.kind]||e.kind)} <span class="muted">· ${date(e.at)}</span></div>`).join(""):`<span class="muted">لا أحداث.</span>`}</div>
+  <div class="card sec"><h3>آخر خطأ</h3>${err?`<div>${esc(String(err.detail?.message||"").slice(0,300))}</div><span class="muted">${date(err.created_at)}</span>`:`<span class="muted">لا أخطاء.</span>`}</div>
+  <div class="card sec"><h3>التحكم</h3>
+    ${d.banned?`<p style="margin:0 0 10px">${shape("s")}موقوف منذ ${date(d.banned_at)} · ${esc(reason?reason.ar:d.ban_reason_code||"")}${d.ban_note?` · <span class="muted">${esc(d.ban_note)}</span>`:""}</p>`:""}
+    <div class="row">
+      ${d.banned?`<button class="btn primary" data-act="resume">استئناف</button>`:`<button class="btn danger" data-act="stop">إيقاف هذا الجهاز</button>`}
+      <button class="btn" data-act="name">تسمية</button>
+      <button class="btn" data-act="del">حذف الجهاز</button>
+    </div></div>`;
+}
+
+// ---------- routing ----------
+function route(){
+  if($("app").hidden)return;
+  const h=location.hash.replace(/^#\/?/,"").split("/");
+  $("view").innerHTML=h[0]=="app"?viewApp(decodeURIComponent(h[1]||"")):h[0]=="device"?viewDevice(decodeURIComponent(h[1]||"")):viewHome();
+}
+addEventListener("hashchange",()=>{filter="all";route();scrollTo(0,0)});
+$("view").addEventListener("click",async e=>{
+  const go=e.target.closest("[data-go]");if(go){location.hash=go.dataset.go;return}
+  const f=e.target.closest("[data-filter]");if(f){filter=f.dataset.filter;route();return}
+  const b=e.target.closest("[data-act]");if(!b)return;
+  const id=decodeURIComponent(location.hash.split("/")[2]||"");
+  if(b.dataset.act=="resume"){await rpc("owner_set_ban",{p_install_id:id,p_banned:false,p_code:null,p_note:null})}
+  if(b.dataset.act=="name"){const cur=D.devices.find(x=>x.install_id==id)?.label||"";const v=prompt("اسم الجهاز",cur);if(v!==null)await rpc("owner_set_label",{p_install_id:id,p_label:v})}
+  if(b.dataset.act=="stop"){$("stopReason").innerHTML=D.reasons.map(r=>`<option value="${esc(r.code)}">${esc(r.ar)}</option>`).join("");$("stopNote").value="";$("stopDlg").dataset.id=id;$("stopDlg").showModal()}
+  if(b.dataset.act=="del"){$("delDlg").dataset.id=id;$("delDlg").showModal()}
+});
+async function rpc(fn,args){const {error}=await db.rpc(fn,args);if(error)alert("لم تتم العملية: "+error.message);await load()}
+$("stopDlg").addEventListener("close",()=>{if($("stopDlg").returnValue=="ok")rpc("owner_set_ban",{p_install_id:$("stopDlg").dataset.id,p_banned:true,p_code:$("stopReason").value,p_note:$("stopNote").value})});
+$("delDlg").addEventListener("close",async()=>{if($("delDlg").returnValue!="ok")return;const app=D.devices.find(x=>x.install_id==$("delDlg").dataset.id)?.app_id;await rpc("owner_delete_device",{p_install_id:$("delDlg").dataset.id});location.hash=app?"#/app/"+app:"#/"});
+$("refresh").onclick=load;
+
+// ---------- auth + two-step sign-in ----------
+let mfa={mode:null,factorId:null};
+function screen(name){["login","mfa","app"].forEach(s=>$(s).hidden=s!=name)}
+function showMfa(mode,qr,secret){
+  mfa.mode=mode;screen("mfa");
+  $("mfaTitle").textContent=mode=="enroll"?"تفعيل التحقق بخطوتين":"التحقق بخطوتين";
+  $("mfaHelp").textContent=mode=="enroll"?"امسح الرمز بتطبيق مصادقة ثم اكتب الرمز المكوّن من 6 أرقام.":"اكتب الرمز المكوّن من 6 أرقام من تطبيق المصادقة.";
+  $("mfaQr").hidden=!qr;if(qr)$("mfaQr").src=qr;
+  $("mfaSecret").hidden=!secret;$("mfaSecret").textContent=secret||"";
+  $("mfaCode").value="";$("mfaErr").textContent="";$("mfaCode").focus();
+}
+async function startEnroll(){
+  const {data:list}=await db.auth.mfa.listFactors();
+  for(const f of (list?.all||[]))if(f.status!="verified")await db.auth.mfa.unenroll({factorId:f.id});
+  const {data,error}=await db.auth.mfa.enroll({factorType:"totp",friendlyName:"Authenticator "+new Date().toISOString().slice(0,16)});
+  if(error){alert(error.message);return}
+  mfa.factorId=data.id;showMfa("enroll",data.totp.qr_code,data.totp.secret);
+}
+$("mfaBtn").onclick=async()=>{
+  const code=$("mfaCode").value.trim();
+  if(!/^\d{6}$/.test(code)){$("mfaErr").textContent="اكتب 6 أرقام.";return}
+  const {error}=await db.auth.mfa.challengeAndVerify({factorId:mfa.factorId,code});
+  if(error){$("mfaErr").textContent="الرمز خاطئ أو منتهٍ. حاول مرة أخرى.";return}
+  if(mfa.mode=="enroll")alert("تم تسجيل تطبيق المصادقة.");
+  mfa.mode=null;start();
+};
+$("mfaCode").addEventListener("keydown",e=>{if(e.key=="Enter")$("mfaBtn").click()});
+$("mfaOut").onclick=$("signOut").onclick=async()=>{$("menuDlg").close();await db.auth.signOut();start()};
+$("addMfa").onclick=()=>{$("menuDlg").close();startEnroll()};
+$("menuBtn").onclick=()=>$("menuDlg").showModal();
+$("chgPw").onclick=async()=>{
+  $("menuDlg").close();
+  const cur=prompt("كلمة المرور الحالية");if(!cur)return;
+  const p=prompt("كلمة مرور جديدة (12 حرفاً فأكثر)");if(!p)return;
+  if(p.length<12){alert("قصيرة: 12 حرفاً على الأقل.");return}
+  const {error}=await db.auth.updateUser({password:p,current_password:cur});alert(error?error.message:"تم تغيير كلمة المرور.");
+};
+$("loginBtn").onclick=async()=>{
+  $("loginErr").textContent="";
+  const {error}=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
+  if(error){$("loginErr").textContent="البريد أو كلمة المرور غير صحيحة.";return}
+  start();
+};
+$("password").addEventListener("keydown",e=>{if(e.key=="Enter")$("loginBtn").click()});
+
+async function start(){
+  const {data}=await db.auth.getSession();
+  if(!data.session){screen("login");return}
+  const {data:aal}=await db.auth.mfa.getAuthenticatorAssuranceLevel();
+  if(aal?.nextLevel=="aal2"&&aal?.currentLevel!="aal2"){
+    const {data:list}=await db.auth.mfa.listFactors();mfa.factorId=list?.totp?.[0]?.id;showMfa("check");return;
+  }
+  if(aal?.nextLevel!="aal2"){startEnroll();return}
+  screen("app");load();
+}
+start();
+setInterval(()=>{if(!$("app").hidden&&document.visibilityState=="visible")load()},60000);
+</script>
+</body>
+</html>
