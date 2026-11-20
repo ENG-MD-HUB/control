@@ -352,7 +352,7 @@ async function load(){
     db.rpc("owner_live_usage"),
     db.from("stora_companies").select("*").order("created_at"),
     db.from("stora_join_codes").select("*").order("created_at"),
-    db.from("coachpad_codes").select("id,code_hint,label,status,max_devices,expires_at,created_at").order("created_at",{ascending:false}),
+    db.from("coachpad_codes").select("id,code,code_hint,label,status,max_devices,expires_at,created_at").order("created_at",{ascending:false}),
     db.from("coachpad_activations").select("code_id,install_id,last_seen")
   ]);
   if(r[0].error||r[1].error){$("view").innerHTML=`<div class="empty">تعذّر تحميل البيانات. سجّل الخروج ثم ادخل من جديد.</div>`;return}
@@ -538,15 +538,15 @@ $("view").addEventListener("click",async e=>{
 function coachpadPanel(){
   const codes=D.cpCodes||[],acts=D.cpActs||[];
   return `<div class="panel sec"><div class="ph"><h3>رموز تفعيل CoachPad Pro</h3><button class="btn sm" id="cpNew">رمز جديد</button></div>
-  <p class="sub">الرمز يظهر مرة واحدة عند إنشائه أو تغييره، ثم يُحفظ مشفّراً. الإيقاف يعيد الأجهزة المرتبطة للنسخة المجانية خلال يوم.</p>
+  <p class="sub">«سحب النسخة الكاملة» يرجع الجهاز للمجانية، و«إيقاف» يسحبها من كل أجهزة الرمز. يُطبَّق عند فتح التطبيق التالي (أو خلال 6 ساعات وهو مفتوح).</p>
   ${codes.length?`<div class="cos">${codes.map(c=>{const dv=acts.filter(a=>a.code_id==c.id),on=c.status=="active";return `<div class="co ${on?"":"off"}">
-    <div class="r"><div><b>${esc(c.label||"بدون اسم")}</b><div class="faint ltr" style="font-size:11.5px;text-align:start">CP••••${esc(c.code_hint||"")}</div></div><span class="chip">${on?`${dot("a")} فعّال`:`${dot("s")} موقوف`}</span></div>
+    <div class="r"><div><b>${esc(c.label||"بدون اسم")}</b>${c.code?`<span class="code" style="margin-top:4px"><b>${esc(c.code)}</b><button data-cp="copy" data-code="${esc(c.code)}">نسخ</button></span>`:`<div class="faint ltr" style="font-size:11.5px;text-align:start">CP••••${esc(c.code_hint||"")} · غيّر الرمز ليظهر كاملاً</div>`}</div><span class="chip">${on?`${dot("a")} فعّال`:`${dot("s")} موقوف`}</span></div>
     <span class="muted" style="font-size:13px">الأجهزة: ${fmt(dv.length)} من ${fmt(c.max_devices)}${c.expires_at?` · ينتهي ${date(c.expires_at)}`:""}</span>
-    ${dv.map(d=>`<span class="code"><b style="letter-spacing:0">${esc(d.install_id.slice(0,8))}</b><span class="faint" style="font-size:11px;letter-spacing:0">${ago(d.last_seen)}</span><button data-cp="unlink" data-id="${c.id}" data-dev="${esc(d.install_id)}">فكّ</button></span>`).join("")}
+    ${dv.map(d=>`<span class="code"><b style="letter-spacing:0">${esc(d.install_id.slice(0,8))}</b><span class="faint" style="font-size:11px;letter-spacing:0">${ago(d.last_seen)}</span><button data-cp="unlink" data-id="${c.id}" data-dev="${esc(d.install_id)}" title="يرجع هذا الجهاز للنسخة المجانية">سحب النسخة الكاملة</button></span>`).join("")}
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-cp="rotate" data-id="${c.id}">تغيير الرمز</button><button class="btn sm ${on?"danger":""}" data-cp="${on?"stop":"resume"}" data-id="${c.id}">${on?"إيقاف":"استئناف"}</button><button class="btn sm" data-cp="del" data-id="${c.id}">حذف</button></div>
   </div>`}).join("")}</div>`:`<span class="muted">لا رموز بعد.</span>`}</div>`;
 }
-const cpShow=code=>prompt("انسخ الرمز الآن، لن يظهر مرة أخرى:",code);
+const cpShow=code=>prompt("الرمز الجديد (يبقى ظاهراً في اللوحة):",code);
 $("view").addEventListener("click",async e=>{
   if(e.target.closest("#cpNew")){
     const label=prompt("اسم الرمز (لمن هو؟)","");if(label===null)return;
@@ -559,7 +559,8 @@ $("view").addEventListener("click",async e=>{
   if(act=="rotate"){if(!confirm("تغيير الرمز؟ الرمز القديم يتوقف، والأجهزة المفعّلة تبقى."))return;const {data,error}=await db.rpc("owner_coachpad_rotate",{p_id:id});if(error){alert("لم تتم العملية: "+error.message);return}cpShow(data.code);await load()}
   if(act=="stop"||act=="resume")await rpc("owner_coachpad_set",{p_id:id,p_status:act=="stop"?"revoked":"active"});
   if(act=="del"){if(!confirm("حذف الرمز نهائياً؟ الأجهزة المرتبطة تعود للنسخة المجانية."))return;await rpc("owner_coachpad_delete",{p_id:id})}
-  if(act=="unlink")await rpc("owner_coachpad_unlink",{p_id:id,p_install:b.dataset.dev});
+  if(act=="copy"){try{await navigator.clipboard.writeText(b.dataset.code);b.textContent="✓";setTimeout(()=>b.textContent="نسخ",1200)}catch{prompt("انسخ الرمز",b.dataset.code)}return}
+  if(act=="unlink"){if(!confirm("سحب النسخة الكاملة من هذا الجهاز؟ يرجع للمجانية عند فتح التطبيق."))return;await rpc("owner_coachpad_unlink",{p_id:id,p_install:b.dataset.dev})}
 });
 
 function viewServices(){
