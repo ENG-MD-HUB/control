@@ -615,7 +615,7 @@ function bgxPanel(){
       <button class="btn sm" data-bgx="permanent" data-id="${p.install_id}">دائم</button>
       <button class="btn sm" data-bgx="trial" data-id="${p.install_id}">أيام…</button>
       <button class="btn sm" data-bgx="free" data-id="${p.install_id}">مجاني</button>
-      <button class="btn sm" data-bgx="auto" data-id="${p.install_id}" title="يرجع لقاعدة التجربة التلقائية (3 أيام لكل جهاز)">تلقائي</button>
+      <button class="btn sm" data-bgx="auto" data-id="${p.install_id}" title="يرجع لقاعدة التجربة التلقائية (5 أيام لكل جهاز)">تلقائي</button>
       <button class="btn sm primary" data-bgx="key" data-id="${p.install_id}">رمز لهذا الجهاز…</button>
       <button class="btn sm" data-bgx="note" data-id="${p.install_id}">ملاحظة</button>
       <button class="btn sm" data-dev="${p.install_id}">التفاصيل</button>
@@ -623,7 +623,7 @@ function bgxPanel(){
   // keys not made for a PC and not used on any PC yet (e.g. sold ahead)
   const loose=codes.filter(c=>!pcs.some(p=>(p.codes||[]).some(x=>x.id==c.id))).map(c=>({...c,hint:c.code_hint,max:c.max_devices,used:acts.filter(a=>a.code_id==c.id).length}));
   return `<div class="panel sec"><div class="ph"><h3>المستخدمون وتراخيصهم</h3><span class="muted" style="font-size:13px">${fmt(pcs.length)} جهاز</span></div>
-  <p class="sub">بطاقة لكل جهاز (حتى لو أعاد التثبيت). كل جهاز يأخذ تجربة 3 أيام تلقائياً ثم يصير مجانياً حتى تعطيه ترخيصاً — دائماً أو بأيام أو برمز خاص به. التغيير يصل للجهاز عند فتح البرنامج أو خلال 6 ساعات.</p>
+  <p class="sub">بطاقة لكل جهاز (حتى لو أعاد التثبيت). كل جهاز يأخذ تجربة 5 أيام تلقائياً ثم يصير مجانياً حتى تعطيه ترخيصاً — دائماً أو بأيام أو برمز خاص به. التغيير يصل للجهاز عند فتح البرنامج أو خلال 6 ساعات.</p>
   <div class="sum" style="margin:0"><div><span class="lic pro">مدفوع / دائم</span><b>${n.pro}</b></div><div><span class="lic trial">تجربة</span><b>${n.trial}</b></div><div><span class="lic free">مجاني</span><b>${n.free}</b></div>${n.blocked?`<div><span class="lic blocked">موقوف</span><b>${n.blocked}</b></div>`:""}</div>
   ${pcs.length?`<div class="pcs">${pcCards}</div>`:`<span class="muted">لم يفتح أحد BGX بعد.</span>`}
   <div class="galh" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">رموز غير مرتبطة بجهاز <button class="btn sm" id="bgxNew">رمز جديد بدون جهاز…</button></div>
