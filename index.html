@@ -301,9 +301,20 @@ dialog::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(3px)}
   <div class="acts"><button class="btn primary" value="ok">حفظ</button><button class="btn" value="cancel" formnovalidate>إلغاء</button></div>
 </form></dialog>
 
+<dialog id="secDlg"><form method="dialog" class="dlg form" id="secForm">
+  <h3 id="secTitle">تصنيف جديد</h3>
+  <label>الاسم بالعربي<input id="sNameAr" maxlength="40" required></label>
+  <label>الاسم بالإنجليزي<input id="sName" maxlength="40" required class="ltr"></label>
+  <label>وصف قصير بالعربي (اختياري)<input id="sNoteAr" maxlength="160"></label>
+  <label>وصف قصير بالإنجليزي (اختياري)<input id="sNote" maxlength="160" class="ltr"></label>
+  <p class="err" id="sErr"></p>
+  <div class="acts"><button class="btn primary" value="ok">حفظ</button><button class="btn danger" type="button" id="secDel" hidden>حذف</button><button class="btn" value="cancel" formnovalidate>إلغاء</button></div>
+</form></dialog>
+
 <dialog id="galDlg"><form method="dialog" class="dlg form" id="galForm">
   <h3>خلفية جديدة في BGX</h3>
-  <label>القسم<select id="gSec"><option value="live">الخلفيات الحية (فيديو)</option><option value="images">الصور</option><option value="prayer">أوقات الصلاة (مجموعة صور)</option></select></label>
+  <label>التصنيف<select id="gSec"></select></label>
+  <label>النوع<select id="gType"><option value="video">خلفية حية (فيديو)</option><option value="image">صورة</option><option value="prayer">مجموعة صور تتبدّل مع أوقات الصلاة (4 أو 5)</option><option value="every">مجموعة صور تتبدّل كل فترة</option></select></label>
   <label>الاسم بالإنجليزي<input id="gName" maxlength="80" required class="ltr"></label>
   <label>الاسم بالعربي<input id="gNameAr" maxlength="80"></label>
   <label><span id="gFilesL">الملف</span><input type="file" id="gFiles" accept="image/jpeg,image/png,video/mp4" required></label>
@@ -412,11 +423,12 @@ async function load(){
     db.rpc("owner_wallfit_installs"),
     db.from("wallfit_codes").select("id,code,code_hint,label,plan,status,max_devices,expires_at,created_at").order("created_at",{ascending:false}),
     db.from("wallfit_activations").select("code_id,install_id,last_seen"),
-    db.from("bgx_catalog").select("*").order("sort")
+    db.from("bgx_catalog").select("*").order("sort"),
+    db.from("bgx_sections").select("*").order("sort")
   ]);
   if(r[0].error||r[1].error){$("view").innerHTML=`<div class="empty">تعذّر تحميل البيانات. سجّل الخروج ثم ادخل من جديد.</div>`;return}
   D={apps:r[0].data,devices:r[1].data,reasons:r[2].data||[],usage:r[3].data||[],events:r[4].data||[],errors:{},
-     accounts:r[6].data||[],services:r[7].data||[],live:(r[8].data||[])[0]||null,storaCos:r[9].data||[],storaCodes:r[10].data||[],cpCodes:r[11].data||[],cpActs:r[12].data||[],bgxPcs:r[13].data||[],bgxCodes:r[14].data||[],bgxActs:r[15].data||[],bgxCat:r[16].data||[]};
+     accounts:r[6].data||[],services:r[7].data||[],live:(r[8].data||[])[0]||null,storaCos:r[9].data||[],storaCodes:r[10].data||[],cpCodes:r[11].data||[],cpActs:r[12].data||[],bgxPcs:r[13].data||[],bgxCodes:r[14].data||[],bgxActs:r[15].data||[],bgxCat:r[16].data||[],bgxSecs:r[17].data||[]};
   (r[5].data||[]).forEach(e=>{if(!D.errors[e.install_id])D.errors[e.install_id]=e});
   route();
 }
@@ -623,25 +635,53 @@ $("view").addEventListener("click",async e=>{
 // ---------- BGX wallpapers: the online gallery and the defaults every PC gets ----------
 // Files live in this repository (GitHub Pages); the list lives in Supabase (bgx_catalog).
 const GH={owner:"ENG-MD-HUB",repo:"control",branch:"main",base:"https://eng-md-hub.github.io/control/"};
-const SEC_AR={live:"الخلفيات الحية",images:"الصور",prayer:"أوقات الصلاة"};
 const ghToken=()=>localStorage.getItem("bgx_gh_token")||"";
+const secName=id=>{const x=(D.bgxSecs||[]).find(z=>z.id==id);return x?(x.name_ar||x.name):id};
 function galPanel(){
-  const all=D.bgxCat||[];
+  const all=D.bgxCat||[],secs=D.bgxSecs||[];
   const card=w=>{const f=w.files||[],bytes=f.reduce((a,x)=>a+(x.size||0),0);return `<div class="gal ${w.active?"":"off"}">
     <div class="th" style="background-image:url('${esc(w.thumb||"")}')">${w.is_default?`<span class="lic pro tag">افتراضية</span>`:""}</div>
     <div class="bd"><div><b>${esc(w.name_ar||w.name)}</b> <span class="faint ltr" style="font-size:12px">${esc(w.name)}</span></div>
-    <span class="muted" style="font-size:12px">${f.length>1?`${f.length} صور · `:""}${size(bytes)}${w.active?"":" · مخفية"}</span>
+    <span class="muted" style="font-size:12px">${f.length>1?`${f.length} صور · ${w.plan=="prayer"?"مع أوقات الصلاة":"كل فترة"} · `:""}${size(bytes)}${w.active?"":" · مخفية"}</span>
     <div class="acts3">
       <button class="btn sm ${w.is_default?"primary":""}" data-gal="def" data-id="${esc(w.id)}">${w.is_default?"إلغاء الافتراضية":"اجعلها افتراضية"}</button>
       <button class="btn sm" data-gal="up" data-id="${esc(w.id)}" title="تقديم">↑</button><button class="btn sm" data-gal="down" data-id="${esc(w.id)}" title="تأخير">↓</button>
+      <button class="btn sm" data-gal="move" data-id="${esc(w.id)}">نقل…</button>
       <button class="btn sm" data-gal="hide" data-id="${esc(w.id)}">${w.active?"إخفاء":"إظهار"}</button>
       <button class="btn sm danger" data-gal="del" data-id="${esc(w.id)}">حذف</button></div></div></div>`};
-  const groups=["live","images","prayer"].map(k=>{const l=all.filter(w=>w.section==k);return `<div class="galh">${SEC_AR[k]} <span class="faint" style="font-size:13px">(${l.length})</span></div>${l.length?`<div class="gals">${l.map(card).join("")}</div>`:`<span class="muted">لا شيء بعد.</span>`}`}).join("");
+  const groups=secs.map(x=>{const l=all.filter(w=>w.section==x.id).sort((a,b)=>a.sort-b.sort);return `<div class="galh" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${esc(x.name_ar||x.name)} <span class="faint" style="font-size:13px">(${l.length})${x.active?"":" · مخفي"}</span>
+    <span style="display:flex;gap:6px"><button class="btn sm" data-sec="edit" data-id="${esc(x.id)}">تعديل</button><button class="btn sm" data-sec="up" data-id="${esc(x.id)}">↑</button><button class="btn sm" data-sec="down" data-id="${esc(x.id)}">↓</button><button class="btn sm" data-sec="hide" data-id="${esc(x.id)}">${x.active?"إخفاء":"إظهار"}</button></span></div>
+    ${l.length?`<div class="gals">${l.map(card).join("")}</div>`:`<span class="muted">لا شيء في هذا التصنيف بعد.</span>`}`}).join("");
   const defs=all.filter(w=>w.is_default&&w.active).length;
-  return `<div class="panel sec"><div class="ph"><h3>خلفيات BGX</h3><span style="display:flex;gap:8px"><button class="btn sm" id="galToken">${ghToken()?"مفتاح GitHub ✓":"مفتاح GitHub"}</button><button class="btn sm primary" id="galAdd">إضافة خلفية</button></span></div>
-  <p class="sub">كل ما هنا يظهر في معرض البرنامج بأقسامه. "الافتراضية" (${defs}) تنزل تلقائياً عند كل المستخدمين، وإذا ألغيتها أو حذفتها تنشال من عندهم — ملفاتهم الخاصة لا تُلمس. الخلفيات هنا تعمل كاملة في النسخة المجانية.</p>
+  return `<div class="panel sec"><div class="ph"><h3>خلفيات BGX</h3><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" id="galToken">${ghToken()?"مفتاح GitHub ✓":"مفتاح GitHub"}</button><button class="btn sm" id="secAdd">تصنيف جديد</button><button class="btn sm primary" id="galAdd">إضافة خلفية</button></span></div>
+  <p class="sub">التصنيفات هي تبويبات المعرض في البرنامج، بنفس الأسماء والترتيب. "الافتراضية" (${defs}) تنزل تلقائياً عند كل المستخدمين، وإذا ألغيتها أو حذفتها تنشال من عندهم — ملفاتهم الخاصة لا تُلمس. كل الخلفيات هنا تعمل كاملة في النسخة المجانية.</p>
   ${groups}</div>`;
 }
+function openSec(x){
+  $("secDlg").dataset.id=x?.id||"";$("secTitle").textContent=x?"تعديل التصنيف":"تصنيف جديد";
+  $("sNameAr").value=x?.name_ar||"";$("sName").value=x?.name||"";$("sNoteAr").value=x?.note_ar||"";$("sNote").value=x?.note||"";
+  $("sErr").textContent="";$("secDel").hidden=!x;$("secDlg").showModal();
+}
+$("secForm").addEventListener("submit",async e=>{
+  if(e.submitter?.value!="ok")return;
+  e.preventDefault();
+  const id0=$("secDlg").dataset.id,v={name:$("sName").value.trim(),name_ar:$("sNameAr").value.trim()||null,note:$("sNote").value.trim()||null,note_ar:$("sNoteAr").value.trim()||null};
+  let r;
+  if(id0)r=await db.from("bgx_sections").update(v).eq("id",id0);
+  else{
+    let id=slug(v.name)||("s"+Date.now().toString(36));if((D.bgxSecs||[]).some(x=>x.id==id))id+="-"+Date.now().toString(36).slice(-3);
+    r=await db.from("bgx_sections").insert({id,...v,sort:Math.max(0,...(D.bgxSecs||[]).map(x=>x.sort||0))+10});
+  }
+  if(r.error){$("sErr").textContent="لم تتم العملية: "+r.error.message;return}
+  $("secDlg").close();await load();
+});
+$("secDel").addEventListener("click",async()=>{
+  const id=$("secDlg").dataset.id;
+  if((D.bgxCat||[]).some(w=>w.section==id)){$("sErr").textContent="انقل الخلفيات منه أو احذفها أولاً.";return}
+  if(!confirm("حذف التصنيف؟"))return;
+  const {error}=await db.from("bgx_sections").delete().eq("id",id);if(error){$("sErr").textContent=error.message;return}
+  $("secDlg").close();await load();
+});
 // GitHub: many files in one commit (git data API, works for big videos too)
 async function gh(path,opt={}){
   const r=await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}/${path}`,{...opt,headers:{Authorization:`Bearer ${ghToken()}`,Accept:"application/vnd.github+json","Content-Type":"application/json",...(opt.headers||{})}});
@@ -684,22 +724,25 @@ async function mediaInfo(file){
 const slug=s=>s.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,50);
 const LABELS={4:["Fajr","Dhuhr","Maghrib","Isha"],5:["Fajr","Dhuhr","Asr","Maghrib","Isha"]};
 function galForm(){
-  const sec=$("gSec").value;
-  $("gFiles").multiple=sec=="prayer";
-  $("gFiles").accept=sec=="live"?"video/mp4":"image/jpeg,image/png";
-  $("gFilesL").textContent=sec=="prayer"?"الصور (4 أو 5)":sec=="live"?"الفيديو":"الصورة";
-  $("gHint").textContent=sec=="prayer"?"اختر الصور مرة واحدة وأسماؤها مرتبة: الفجر، الظهر، [العصر،] المغرب، العشاء (مثلاً 1-fajr.jpg … 5-isha.jpg). تتبدّل عند المستخدم مع أوقات الصلاة الحقيقية."
-    :sec=="live"?"فيديو MP4 (يفضّل 1080p أو 4K، أقل من 90 ميجا)، يتكرر بدون انقطاع.":"صورة JPG أو PNG بدقة 4K (3840×2160).";
+  const t=$("gType").value,set=t=="prayer"||t=="every";
+  $("gFiles").multiple=set;
+  $("gFiles").accept=t=="video"?"video/mp4":"image/jpeg,image/png";
+  $("gFilesL").textContent=set?"الصور":t=="video"?"الفيديو":"الصورة";
+  $("gHint").textContent=t=="prayer"?"4 أو 5 صور، أسماؤها مرتبة: الفجر، الظهر، [العصر،] المغرب، العشاء (مثلاً 1-fajr.jpg … 5-isha.jpg). تتبدّل عند المستخدم مع أوقات الصلاة الحقيقية."
+    :t=="every"?"صورتان أو أكثر، بالترتيب حسب الاسم. تتبدّل عند المستخدم كل 30 دقيقة (يقدر يغيّرها)."
+    :t=="video"?"فيديو MP4 (يفضّل 1080p أو 4K، أقل من 90 ميجا)، يتكرر بدون انقطاع.":"صورة JPG أو PNG بدقة 4K (3840×2160).";
 }
-$("gSec").addEventListener("change",galForm);
+$("gType").addEventListener("change",galForm);
 $("galForm").addEventListener("submit",async e=>{
   if(e.submitter?.value!="ok")return;
   e.preventDefault();
   const err=$("gErr");err.textContent="";
-  const sec=$("gSec").value,name=$("gName").value.trim(),nameAr=$("gNameAr").value.trim();
+  const sec=$("gSec").value,type=$("gType").value,name=$("gName").value.trim(),nameAr=$("gNameAr").value.trim();
   const files=[...$("gFiles").files].sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));
   if(!ghToken()){err.textContent="أدخل مفتاح GitHub أولاً (زر «مفتاح GitHub»).";return}
-  if(sec=="prayer"&&!LABELS[files.length]){err.textContent="مجموعة أوقات الصلاة تحتاج 4 أو 5 صور.";return}
+  if(!sec){err.textContent="أضف تصنيفاً أولاً.";return}
+  if(type=="prayer"&&!LABELS[files.length]){err.textContent="مجموعة أوقات الصلاة تحتاج 4 أو 5 صور.";return}
+  if(type=="every"&&files.length<2){err.textContent="المجموعة تحتاج صورتين أو أكثر.";return}
   if(!files.length){err.textContent="اختر الملف.";return}
   if(files.some(f=>f.size>95*1048576)){err.textContent="الملف أكبر من 95 ميجا.";return}
   let id=slug(name)||("w"+Date.now());
@@ -710,17 +753,17 @@ $("galForm").addEventListener("submit",async e=>{
     for(let i=0;i<files.length;i++){
       const f=files[i];btn.textContent=`يجهّز ${i+1}/${files.length}…`;
       const buf=await f.arrayBuffer(),info=await mediaInfo(f);
-      const ext=f.name.split(".").pop().toLowerCase(),label=sec=="prayer"?LABELS[files.length][i]:null;
+      const ext=f.name.split(".").pop().toLowerCase(),label=type=="prayer"?LABELS[files.length][i]:type=="every"?String(i+1):null;
       const path=`gallery/files/${id}${label?"-"+label.toLowerCase():""}.${ext}`;
       entries.push({path,buf});
       list.push({url:GH.base+path,sha256:hex(await crypto.subtle.digest("SHA-256",buf)),size:f.size,width:info.w,height:info.h,...(label?{label}:{})});
-      if(!thumb||label=="Dhuhr")thumb=info.thumb;
+      if(!thumb||label=="Dhuhr")thumb=info.thumb;   // a prayer set shows its daytime picture
     }
     entries.push({path:`gallery/thumbs/${id}.jpg`,buf:thumb});
     btn.textContent="يرفع إلى GitHub…";
     await ghCommit(`BGX gallery: add ${name}`,entries);
     const maxSort=Math.max(0,...(D.bgxCat||[]).filter(w=>w.section==sec).map(w=>w.sort||0));
-    const {error}=await db.from("bgx_catalog").insert({id,section:sec,name,name_ar:nameAr||null,thumb:GH.base+`gallery/thumbs/${id}.jpg`,files:list,is_default:$("gDef").checked,sort:maxSort+10});
+    const {error}=await db.from("bgx_catalog").insert({id,section:sec,name,name_ar:nameAr||null,thumb:GH.base+`gallery/thumbs/${id}.jpg`,files:list,is_default:$("gDef").checked,sort:maxSort+10,plan:type=="prayer"||type=="every"?type:null});
     if(error)throw new Error(error.message);
     $("galDlg").close();await load();
     alert("تمت الإضافة. GitHub ينشر الملف خلال دقيقة تقريباً، بعدها يظهر عند المستخدمين.");
@@ -731,13 +774,30 @@ $("view").addEventListener("click",async e=>{
   if(e.target.closest("#galToken")){
     const v=prompt("مفتاح GitHub (Fine-grained token بصلاحية Contents: Read and write على مستودع control فقط).\nيُحفظ في هذا المتصفح فقط. اتركه فارغاً لحذفه.",ghToken());
     if(v===null)return;v.trim()?localStorage.setItem("bgx_gh_token",v.trim()):localStorage.removeItem("bgx_gh_token");route();return}
-  if(e.target.closest("#galAdd")){$("galForm").reset();$("gErr").textContent="";galForm();$("galDlg").showModal();return}
+  if(e.target.closest("#galAdd")){
+    $("galForm").reset();$("gErr").textContent="";
+    $("gSec").innerHTML=(D.bgxSecs||[]).map(x=>`<option value="${esc(x.id)}">${esc(x.name_ar||x.name)}</option>`).join("");
+    galForm();$("galDlg").showModal();return}
+  if(e.target.closest("#secAdd")){openSec(null);return}
+  const sb=e.target.closest("[data-sec]");
+  if(sb){
+    const secs=(D.bgxSecs||[]).slice().sort((a,b)=>a.sort-b.sort),x=secs.find(z=>z.id==sb.dataset.id);if(!x)return;
+    const act=sb.dataset.sec;
+    if(act=="edit"){openSec(x);return}
+    if(act=="hide"){const {error}=await db.from("bgx_sections").update({active:!x.active}).eq("id",x.id);if(error)alert(error.message);await load();return}
+    const i=secs.indexOf(x),j=act=="up"?i-1:i+1;if(j<0||j>=secs.length)return;const o=secs[j];
+    let a=x.sort,c=o.sort;if(a==c){a=i*10;c=j*10}
+    await db.from("bgx_sections").update({sort:c}).eq("id",x.id);await db.from("bgx_sections").update({sort:a}).eq("id",o.id);await load();return}
   const b=e.target.closest("[data-gal]");if(!b)return;
   const all=D.bgxCat||[],w=all.find(x=>x.id==b.dataset.id);if(!w)return;
   const upd=async v=>{const {error}=await db.from("bgx_catalog").update(v).eq("id",w.id);if(error){alert("لم تتم العملية: "+error.message);return}await load()};
   const act=b.dataset.gal;
   if(act=="def"){if(w.is_default&&!confirm("إلغاء الافتراضية؟ ستُحذف من عند المستخدمين الذين نزلت عندهم تلقائياً."))return;await upd({is_default:!w.is_default});return}
   if(act=="hide"){await upd({active:!w.active});return}
+  if(act=="move"){
+    const secs=D.bgxSecs||[];
+    const pick=prompt("انقلها إلى أي تصنيف؟ اكتب الرقم:\n"+secs.map((x,k)=>`${k+1}. ${x.name_ar||x.name}`).join("\n"),"");
+    const x=secs[Number(pick)-1];if(!x||x.id==w.section)return;await upd({section:x.id});return}
   if(act=="up"||act=="down"){
     const l=all.filter(x=>x.section==w.section).sort((a,b)=>a.sort-b.sort),i=l.indexOf(w),j=act=="up"?i-1:i+1;
     if(j<0||j>=l.length)return;const o=l[j];
