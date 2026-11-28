@@ -672,8 +672,8 @@ $("view").addEventListener("click",async e=>{
 });
 
 // ---------- BGX wallpapers: the online gallery and the defaults every PC gets ----------
-// Files live in this repository (GitHub Pages); the list lives in Supabase (bgx_catalog).
-const GH={owner:"ENG-MD-HUB",repo:"control",branch:"main",base:"https://eng-md-hub.github.io/control/"};
+// Files live in their own repository, ENG-MD-HUB/BGX (GitHub Pages); the list lives in Supabase (bgx_catalog).
+const GH={owner:"ENG-MD-HUB",repo:"BGX",branch:"main",base:"https://eng-md-hub.github.io/BGX/"};
 const ghToken=()=>localStorage.getItem("bgx_gh_token")||"";
 const secName=id=>{const x=(D.bgxSecs||[]).find(z=>z.id==id);return x?(x.name_ar||x.name):id};
 function galPanel(){
@@ -819,7 +819,7 @@ $("galForm").addEventListener("submit",async e=>{
 });
 $("view").addEventListener("click",async e=>{
   if(e.target.closest("#galToken")){
-    const v=prompt("مفتاح GitHub (Fine-grained token بصلاحية Contents: Read and write على مستودع control فقط).\nيُحفظ في هذا المتصفح فقط. اتركه فارغاً لحذفه.",ghToken());
+    const v=prompt("مفتاح GitHub (Fine-grained token بصلاحية Contents: Read and write على مستودع BGX فقط).\nيُحفظ في هذا المتصفح فقط. اتركه فارغاً لحذفه.",ghToken());
     if(v===null)return;v.trim()?localStorage.setItem("bgx_gh_token",v.trim()):localStorage.removeItem("bgx_gh_token");route();return}
   if(e.target.closest("#galAdd")){
     $("galForm").reset();$("gErr").textContent="";
